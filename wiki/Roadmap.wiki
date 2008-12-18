@@ -1,0 +1,16 @@
+#summary Development Roadmap
+
+= 0.1 =
+  * CRUD
+  * Query Language
+
+= 0.2 =
+  * Many-to-one relationships
+  * One-to-many relationships
+
+= 0.3 =
+  * Many-to-many relationships
+  * One-to-one relationships
+
+= 0.4 =
+  * PHP > 5.3 Reflection Support (support for private properties)
