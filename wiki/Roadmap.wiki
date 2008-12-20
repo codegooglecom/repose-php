@@ -2,11 +2,11 @@
 
 = 0.1 =
   * CRUD
-  * Query Language
-
-= 0.2 =
   * Many-to-one relationships
   * One-to-many relationships
+
+= 0.2 =
+  * Query Language
 
 = 0.3 =
   * Many-to-many relationships
