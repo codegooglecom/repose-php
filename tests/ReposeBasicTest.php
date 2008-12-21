@@ -108,7 +108,7 @@ CREATE TABLE bug (
 
     }
 
-    public function testModelSimple() {
+    public function testSimpleModelUsageWithoutPersistence() {
 
         $this->loadClass('sample_User');
         $this->loadClass('sample_Project');
@@ -118,6 +118,7 @@ CREATE TABLE bug (
         $userJosh = new sample_User('josh');
 
         $project = new sample_Project('Sample Project', $userBeau);
+
         $bug = new sample_Bug(
             $project,
             'Something is broken',
@@ -125,6 +126,21 @@ CREATE TABLE bug (
             $userJosh, // Reporter
             $userBeau // Owner
         );
+
+        $this->assertEquals('Something is broken', $bug->getTitle());
+        $this->assertEquals('Click http://example.com/ to test!', $bug->getBody());
+
+        $this->assertEquals('josh', $bug->getReporter()->getName(), 'Reporter');
+        $this->assertEquals('beau', $bug->getOwner()->getName(), 'Owner');
+
+        $this->assertEquals('Sample Project', $bug->getProject()->getName(), 'Bug\'s Project\'s name does not match');
+        $this->assertEquals('beau', $bug->getProject()->getManager()->getName(), 'Manager');
+
+        $this->assertEquals('Sample Project', $project->getName());
+        $this->assertEquals('beau', $project->getManager()->getName(), 'Manager');
+
+        $this->assertEquals('beau', $userBeau->getName());
+        $this->assertEquals('josh', $userJosh->getName());
 
     }
 
