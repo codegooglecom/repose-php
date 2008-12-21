@@ -10,6 +10,7 @@ class sample_Bug {
     public function __construct($project, $title, $body, $reporter, $owner = null) {
         $this->project = $project;
         $this->title = $title;
+        $this->body = $body;
         $this->reporter = $reporter;
         $this->owner = $owner;
     }
