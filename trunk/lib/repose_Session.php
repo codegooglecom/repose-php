@@ -27,17 +27,17 @@ class repose_Session {
         foreach ( $this->getClassConfig($object)->getProperties() as $property ) {
             $value = null;
             if ( $property->isPrimaryKey() ) {
-                if ( $object->___reposeProxyPrimaryKey() === null ) {
+                if ( $object->___reposeProxyPrimaryKey($this) === null ) {
                     $object->___reposeProxySetter($property->getName(), $fieldsToUpdate[$property->getName()] = $this->counter++);
                 } else {
-                    $fieldsToUpdate[$property->getName()] = $object->___reposeProxyPrimaryKey();
+                    $fieldsToUpdate[$property->getName()] = $object->___reposeProxyPrimaryKey($this);
                 }
             } else {
                 $value = $object->___reposeProxyGetter($property->getName());
                 if ( $property->isObject() and $value !== null ) {
                     // If this property is an object, and it is not null,
                     // we should save out that object and store its proxy.
-                    $value = $this->save($value)->___reposeProxyPrimaryKey();
+                    $value = $this->save($value)->___reposeProxyPrimaryKey($this);
                 }
                 $fieldsToUpdate[$property->getName()] = $value;
             }

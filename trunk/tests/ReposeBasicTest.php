@@ -16,7 +16,7 @@ class ReposeBasicTest extends AbstractReposeTest {
 
             'autoload' => array($this, 'loadClass'),
 
-            'connection' => array( 'dsn' => 'sqlite:ReposeBasicTest.sq3', ),
+            'connection' => array( 'dsn' => 'sqlite:' . dirname(__FILE__) . DIRECTORY_SEPARATOR . 'ReposeBasicTest.sq3', ),
 
             'classes' => array(
 
