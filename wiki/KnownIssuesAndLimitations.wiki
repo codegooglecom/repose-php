@@ -6,9 +6,9 @@ There are several known issues and limitations with Repose. These issues are eit
 
 == TOC ==
 
- * [KnownIssuesAndLimitations#Known_Issues Known Issues]
-  * [KnownIssuesAndLimitations#Object_identity_is_lost_when_casting_to_proxy Object identity is lost when casting to proxy]
- * [KnownIssuesAndLimitations#Limitations]
+ * [#Known_Issues Known Issues]
+  * [#Object_identity_is_lost_when_casting_to_proxy Object identity is lost when casting to proxy]
+ * [#Limitations Limitations]
 
 
 = Limitations =
