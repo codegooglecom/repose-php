@@ -1,0 +1,37 @@
+#summary Known Issues and Limitations
+
+= Introduction =
+
+There are several known issues and limitations with Repose. These issues are either by-design, cannot be helped or will not be helped.
+
+
+= Limitations =
+
+== Object identity is lost when casting to proxy ==
+
+All objects lose their identity within the proxy system when cast as a proxy. As a result, it is impossible to use the identity operator ( === ) to determine if an individual object has already been cached once a recursive cast-to-proxy operation has begun.
+
+As a result, Repose uses the standard equals operator ( == ) which can cause problems when two objects are created that are "equal" but not the same.
+
+{{{
+$userOne = new sample_User('beau');
+$userTwo = new sample_User('beau');
+
+$project = new sample_Project('Sample Project', $userOne);
+
+$bug = new sample_Bug(
+    $project,
+    'Something is broken',
+    'Click http://example.com/ to test!',
+    $userTwo, // Reporter
+    $userOne // Owner
+);
+
+$session->save($bug);
+}}}
+
+In this example, even though there are two separate objects ( $userOne and $userTwo ), since they have the same property values ( both have the same "name" ), they will be treated as the same object inside the proxy system. Put another way, only one user record will be persisted ( one with name "beau" ), and the project manager, the reporter and the owner will all point to the same record.
+
+This is a limitation in the implementation of the generated proxy class's `___reposeProxyClone()` method. Short of enhanced Reflection, this is a limitation PHP < 5.3 Repose may just have to live with. Suggestions on handling this differently are welcome!
+
+_It is possible that this can be fixed for PHP >= 5.3 with enhanced access to private and protected methods by Reflection._
