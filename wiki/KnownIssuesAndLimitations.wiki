@@ -4,11 +4,11 @@
 
 There are several known issues and limitations with Repose. These issues are either by-design, cannot be helped or will not be helped.
 
-== TOC ==
+== Known Issues ==
 
- * [#Known_Issues Known Issues]
-  * [#Object_identity_is_lost_when_casting_to_proxy Object identity is lost when casting to proxy]
- * [#Limitations Limitations]
+== Limitations ==
+
+ * [#Object_identity_is_lost_when_casting_to_proxy Object identity is lost when casting to proxy]
 
 
 = Limitations =
