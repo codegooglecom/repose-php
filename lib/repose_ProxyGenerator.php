@@ -2,7 +2,6 @@
 
 class repose_ProxyGenerator {
     static private $PROXIES_LOADED = array();
-    static private $PROXY_REPOSE_SESSION_PROPERTY_NAME = '___reposeSession';
     public function getProxyClassName($object) {
         $clazz = null;
         if ( is_object($object) ) {
@@ -31,8 +30,7 @@ class repose_ProxyGenerator {
         $serialized = serialize($object);
         if ( isset($this->cache[$serialized]) ) return $this->cache[$serialized];
         $proxy = $class->newInstance();
-        $proxy->___reposeProxySetter(self::$PROXY_REPOSE_SESSION_PROPERTY_NAME, $session);
-        $proxy->___reposeProxyClone($object);
+        $proxy->___reposeProxyClone($session, $object);
         return $this->cache[$serialized] = $proxy;
     }
     public function getProxyObject($object, $session) {
@@ -46,8 +44,7 @@ class repose_ProxyGenerator {
         $clazz = $this->getProxyClassName($clazz);
         $class = new ReflectionClass($clazz);
         $proxy = $class->newInstance();
-        $proxy->___reposeProxySetter(self::$PROXY_REPOSE_SESSION_PROPERTY_NAME, $session);
-        $proxy->___reposeProxyFromData($data);
+        $proxy->___reposeProxyFromData($session, $data);
         return $proxy;
     }
     private function generateProxy($object) {
@@ -65,7 +62,6 @@ class repose_ProxyGenerator {
         $c = '';
 
         $c .= 'class ' . $proxyClazz . ' extends ' . $clazz . ' implements repose_IProxy {' . "\n";
-        $c .= '    protected $' . self::$PROXY_REPOSE_SESSION_PROPERTY_NAME . ';' . "\n";
         $c .= '    // Noarg constructor ensures we can instantiate this object raw.' . "\n";
         $c .= '    public function __construct() {' . "\n";
         $c .= '    }' . "\n";
@@ -78,16 +74,16 @@ class repose_ProxyGenerator {
         $c .= '    public function ___reposeProxyGetter($prop) {' . "\n";
         $c .= '        return $this->$prop;' . "\n";
         $c .= '    }' . "\n";
-        $c .= '    public function ___reposeProxyFromData($data) {' . "\n";
-        $c .= '        foreach ( $this->___reposeProxyGetProperties() as $prop ) {' . "\n";
+        $c .= '    public function ___reposeProxyFromData($session, $data) {' . "\n";
+        $c .= '        foreach ( $this->___reposeProxyGetProperties($session) as $prop ) {' . "\n";
         $c .= '            $value = $data[$prop->getName()];' . "\n";
         $c .= '            if ( $value !== null and $prop->isObject() ) {' . "\n";
-        $c .= '                $value = $this->' . self::$PROXY_REPOSE_SESSION_PROPERTY_NAME . '->castAsProxy($value);' . "\n";
+        $c .= '                $value = $session->castAsProxy($value);' . "\n";
         $c .= '            }' . "\n";
         $c .= '            $this->___reposeProxySetter($prop->getName(), $value);' . "\n";
         $c .= '        }' . "\n";
         $c .= '    }' . "\n";
-        $c .= '    public function ___reposeProxyClone($source) {' . "\n";
+        $c .= '    public function ___reposeProxyClone($session, $source) {' . "\n";
         $c .= '        if ( ! ( $source instanceof repose_IProxy ) ) {' . "\n";
         $c .= '            // Hack to turn our source into a proxy without actually' . "\n";
         $c .= '            // calling a constructor.' . "\n";
@@ -98,16 +94,16 @@ class repose_ProxyGenerator {
         $c .= '        }' . "\n";
         $c .= '        // Once we are certain that our source is a proxy, we can' . "\n";
         $c .= '        // leverage the property getters.' . "\n";
-        $c .= '        foreach ( $this->___reposeProxyGetProperties() as $prop ) {' . "\n";
+        $c .= '        foreach ( $this->___reposeProxyGetProperties($session) as $prop ) {' . "\n";
         $c .= '            $value = $source->___reposeProxyGetter($prop->getName());' . "\n";
         $c .= '            if ( $value !== null and $prop->isObject() ) {' . "\n";
-        $c .= '                $value = $this->' . self::$PROXY_REPOSE_SESSION_PROPERTY_NAME . '->castAsProxy($value);' . "\n";
+        $c .= '                $value = $session->castAsProxy($value);' . "\n";
         $c .= '            }' . "\n";
         $c .= '            $this->___reposeProxySetter($prop->getName(), $value);' . "\n";
         $c .= '        }' . "\n";
         $c .= '    }' . "\n";
-        $c .= '    public function ___reposeProxyPrimaryKey() {' . "\n";
-        $c .= '        $primaryKeyDetails = $this->' . self::$PROXY_REPOSE_SESSION_PROPERTY_NAME . '->getClassConfig($this)->getPrimaryKeyDetails();' . "\n";
+        $c .= '    public function ___reposeProxyPrimaryKey($session) {' . "\n";
+        $c .= '        $primaryKeyDetails = $session->getClassConfig($this)->getPrimaryKeyDetails();' . "\n";
         $c .= '        switch($primaryKeyDetails[\'type\']) {' . "\n";
         $c .= '            case \'single\':' . "\n";
         $c .= '                return $this->___reposeProxyGetter($primaryKeyDetails[\'propertyName\']);' . "\n";
@@ -116,8 +112,8 @@ class repose_ProxyGenerator {
         $c .= '                break;' . "\n";
         $c .= '        }' . "\n";
         $c .= '    }' . "\n";
-        $c .= '    public function ___reposeProxyGetProperties() {' . "\n";
-        $c .= '        return $this->' . self::$PROXY_REPOSE_SESSION_PROPERTY_NAME . '->getClassConfig($this)->getProperties();' . "\n";
+        $c .= '    public function ___reposeProxyGetProperties($session) {' . "\n";
+        $c .= '        return $session->getClassConfig($this)->getProperties();' . "\n";
         $c .= '    }' . "\n";
         $c .= '}' . "\n";
 echo $c . "\n\n";
