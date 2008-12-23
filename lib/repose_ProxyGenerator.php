@@ -21,17 +21,29 @@ class repose_ProxyGenerator {
         eval($this->generateProxy($object));
         self::$PROXIES_LOADED[$clazz] = true;
     }
-    // TODO Temporary hack!
-    private $cache;
+    // TODO Should make sure to flush cache when session closes!
+    // TODO Add __dstruct method.
+    private $cache = array();
     private function castAsProxyObject($object, $session) {
         $this->assertProxyExists($object);
+        $originalClass = get_class($object);
+        if ( ! isset($this->cache[$originalClass]) ) {
+            $this->cache[$originalClass] = array();
+        }
+        foreach ( $this->cache[$originalClass] as $cachedItem ) {
+            if ( $cachedItem['originalObject'] == $object ) {
+                return $cachedItem['proxyObject'];
+            }
+        }
         $clazz = $this->getProxyClassName($object);
         $class = new ReflectionClass($clazz);
-        $serialized = serialize($object);
-        if ( isset($this->cache[$serialized]) ) return $this->cache[$serialized];
         $proxy = $class->newInstance();
         $proxy->___reposeProxyClone($session, $object);
-        return $this->cache[$serialized] = $proxy;
+        $this->cache[$originalClass][] = array(
+            'originalObject' => $object,
+            'proxyObject' => $proxy
+        );
+        return $proxy;
     }
     public function getProxyObject($object, $session) {
         // TODO: We might want to ensure that we pass back the proxy for
@@ -116,7 +128,7 @@ class repose_ProxyGenerator {
         $c .= '        return $session->getClassConfig($this)->getProperties();' . "\n";
         $c .= '    }' . "\n";
         $c .= '}' . "\n";
-echo $c . "\n\n";
+//echo $c . "\n\n";
         return $c;
 
     }

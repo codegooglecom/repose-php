@@ -1,14 +1,18 @@
 <?php
 require_once(REPOSE_LIB . 'repose_ConfigurationProperty.php');
 class repose_ConfigurationClass {
+    protected $configuration;
     protected $name;
+    protected $tableName;
     protected $properties = array();
     protected $primaryKeyProperties = array();
     protected $primaryKeyDetails = array();
-    public function __construct($name, $config) {
+    public function __construct($configuration, $name, $config) {
+        $this->configuration = $configuration;
         $this->name = $name;
+        $this->tableName = $config['tableName'];
         foreach ( $config['properties'] as $propertyName => $propertyConfig ) {
-            $configurationProperty = new repose_ConfigurationProperty($propertyName, $propertyConfig);
+            $configurationProperty = new repose_ConfigurationProperty($this->configuration, $propertyName, $propertyConfig);
             $this->properties[$propertyName] = $configurationProperty;
             if ( $configurationProperty->isPrimaryKey() ) {
                 $this->primaryKeyProperties[$propertyName] = $configurationProperty;
@@ -19,7 +23,7 @@ class repose_ConfigurationClass {
             $this->primaryKeyDetails = array(
                 'type' => 'single',
                 'propertyName' => $primaryKeyPropertyNames[0],
-                'properties' => $this->primaryKeyProperties,
+                'property' => $this->primaryKeyProperties[$primaryKeyPropertyNames[0]]
             );
         } elseif ( count($primaryKeyProperties) > 1 ) {
             $this->primaryKeyDetails = array(
@@ -32,6 +36,9 @@ class repose_ConfigurationClass {
     public function getName() {
         return $this->name;
     }
+    public function getTableName() {
+        return $this->tableName;
+    }
     public function getPropertyNames() {
         return array_keys($this->properties);
     }
@@ -40,6 +47,10 @@ class repose_ConfigurationClass {
     }
     public function getPrimaryKeyDetails() {
         return $this->primaryKeyDetails;
+    }
+    public function __destruct() {
+        $this->properties = null;
+        $this->configuration = null;
     }
 }
 
