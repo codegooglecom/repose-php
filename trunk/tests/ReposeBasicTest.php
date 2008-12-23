@@ -108,6 +108,37 @@ CREATE TABLE bug (
 
     }
 
+    public function testSimpleIdentity() {
+
+        $this->loadClass('sample_User');
+
+        $userBeau = new sample_User('beau');
+
+        $userMapOne = array('user' => $userBeau);
+        $userMapTwo = array('user' => $userBeau);
+
+        $this->assertTrue($userMapOne['user'] === $userMapTwo['user']);
+
+
+    }
+
+
+    public function testSimpleArrayIdentity() {
+
+        $this->loadClass('sample_User');
+
+        $userBeau = new sample_User('beau');
+        $userDummy = new sample_User('beau');
+
+        $usersOnlyBeau = array($userBeau);
+
+        $this->assertFalse($userBeau === $userDummy);
+
+        $this->assertTrue(in_array($userBeau, $usersOnlyBeau, true));
+        $this->assertFalse(in_array($userDummy, $usersOnlyBeau, true));
+
+    }
+
     public function testSimpleModelUsageWithoutPersistence() {
 
         $this->loadClass('sample_User');
@@ -141,6 +172,21 @@ CREATE TABLE bug (
 
         $this->assertEquals('beau', $userBeau->getName());
         $this->assertEquals('josh', $userJosh->getName());
+
+        $this->assertTrue($bug->getProject()->getManager() === $bug->getOwner());
+
+        $bug = $this->getSession()->save($bug);
+
+        try {
+            $this->getSession()->save($bug);
+            $this->assertTrue(false, "Resaving bug should have thrown an exception");
+        } catch(Exception $e) {
+            $this->assertTrue(true);
+        }
+
+        $bug->getOwner()->setName("beau updated");
+
+        $this->getSession()->update($bug);
 
     }
 

@@ -13,7 +13,7 @@ class repose_Configuration {
     protected $autoload = null;
     public function __construct($config) {
         foreach ( $config['classes'] as $className => $classConfig ) {
-            $this->classes[$className] = new repose_ConfigurationClass($className, $classConfig);
+            $this->classes[$className] = new repose_ConfigurationClass($this, $className, $classConfig);
         }
         if ( isset($config['connection']['dataSource']) ) {
             $this->dataSource = $config['connection']['dataSource'];
@@ -82,6 +82,9 @@ class repose_Configuration {
                 call_user_func_array($this->autoload, array($clazz));
             }
         }
+    }
+    public function __destruct() {
+        $this->classes = null;
     }
 }
 ?>
