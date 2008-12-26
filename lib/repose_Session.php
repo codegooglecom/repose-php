@@ -246,6 +246,26 @@ class repose_Session {
         $this->configuration->loadClass($clazz);
     }
 
+    public function delete($object) {
+        $object = $this->proxyGenerator->getProxyObject($object, $this);
+        if ( $object->___reposeProxyPrimaryKey($this) === null ) {
+            throw new Exception("Cannot update object who has not already been saved (primary key is not set)");
+        }
+        $nonPkPropertyValues = $this->cascadeSaveOrUpdateGetValues($object);
+        $updatedFields = $this->getUpdatedFields($object, $nonPkPropertyValues);
+        // If there are no fields that need to be updated, we can just pass back
+        // the object right away.
+        if ( count($updatedFields) < 1 ) { return $object; }
+        $classConfig = $this->getClassConfig($object);
+        $query = 'DELETE FROM ' . $classConfig->getTableName();
+        $queryValues = array();
+        $primaryKeyDetails = $classConfig->getPrimaryKeyDetails();
+        $query .= ' WHERE ' . $primaryKeyDetails['property']->getColumnName() . ' = :' . $primaryKeyDetails['property']->getColumnName();
+        $queryValues[$primaryKeyDetails['property']->getColumnName()] = $object->___reposeProxyGetter( $primaryKeyDetails['property']->getName() );
+        $statement = $this->configuration->getDataSource()->prepare($query);
+        $statement->execute($queryValues);
+    }
+
     public function flush() {
         foreach ( $this->proxyCache as $clazz => $cacheInfo ) {
             foreach ( $this->proxyCache[$clazz] as $primaryKeyValue => $objectInfo ) {
