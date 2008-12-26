@@ -8,15 +8,16 @@
   * CRUD (*C*, *R*, *U* implemented so far)
   * _Many-to-one relationships_
   * _Single field primary key_
-  * One-to-many relationships
 
 = 0.2 =
-  * Enhanced query language
-  * Composite primary keys
+  * One-to-many relationships
+  * Circular many-to-one references
 
 = 0.3 =
+  * Enhanced query language
   * Many-to-many relationships
   * One-to-one relationships
 
 = 0.4 =
+  * Composite primary keys
   * PHP > 5.3 Reflection Support (support for private properties)
