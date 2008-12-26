@@ -89,9 +89,33 @@ class repose_ProxyGenerator {
         $c .= '    public function ___reposeProxyGetter($prop) {' . "\n";
         $c .= '        return $this->$prop;' . "\n";
         $c .= '    }' . "\n";
+        $c .= '    public function ___reposeProxyColumnData($session) {' . "\n";
+        $c .= '        $data = array();' . "\n";
+        $c .= '        foreach ( $this->___reposeProxyGetProperties($session) as $prop ) {' . "\n";
+        $c .= '            $value = $this->___reposeProxyGetter($prop->getName());' . "\n";
+        $c .= '            if ( $prop->isObject() and $value !== null ) {' . "\n";
+        $c .= '                $value = $value->___reposeProxyPrimaryKey($session);' . "\n";
+        $c .= '            }' . "\n";
+        $c .= '            $data[$prop->getColumnName()] = $value;' . "\n";
+        $c .= '        }' . "\n";
+        $c .= '        return $data;' . "\n";
+        $c .= '    }' . "\n";
+        /*
+        $c .= '    public function ___reposeProxyData($session) {' . "\n";
+        $c .= '        $data = array();' . "\n";
+        $c .= '        foreach ( $this->___reposeProxyGetProperties($session) as $prop ) {' . "\n";
+        $c .= '            $value = $this->___reposeProxyGetter($prop->getName());' . "\n";
+        $c .= '            if ( $prop->isObject() and $value !== null ) {' . "\n";
+        $c .= '                $value = $value->___reposeProxyPrimaryKey($session);' . "\n";
+        $c .= '            }' . "\n";
+        $c .= '            $data[$prop->getName()] = $value;' . "\n";
+        $c .= '        }' . "\n";
+        $c .= '        return $data;' . "\n";
+        $c .= '    }' . "\n";
+        */
         $c .= '    public function ___reposeProxyFromData($session, $data) {' . "\n";
         $c .= '        foreach ( $this->___reposeProxyGetProperties($session) as $prop ) {' . "\n";
-        $c .= '            $value = $data[$prop->getName()];' . "\n";
+        $c .= '            $value = isset($data[$prop->getName()]) ? $data[$prop->getName()] : null;' . "\n";
         $c .= '            if ( $value !== null and $prop->isObject() ) {' . "\n";
         $c .= '                $value = $session->castAsProxy($value);' . "\n";
         $c .= '            }' . "\n";

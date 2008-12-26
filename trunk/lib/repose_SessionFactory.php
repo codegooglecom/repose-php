@@ -16,9 +16,6 @@ class repose_SessionFactory {
     public function openSession() {
         return new repose_Session($this->configuration);
     }
-    public function __destruct() {
-        $this->currentSession->flush();
-    }
 }
 
 ?>
