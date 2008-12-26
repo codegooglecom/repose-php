@@ -286,6 +286,26 @@ CREATE TABLE bug (
 
     }
 
+    public function testDelete() {
+
+        $bug = $this->getSession()->load('sample_Bug', 521152);
+
+        $this->getSession()->delete($bug);
+
+        $newSession = $this->sessionFactory->openSession();
+
+        $newBug = null;
+
+        try {
+            // We expect an exception here.
+            $newBug = $newSession->load('sample_Bug', 521152);
+        } catch (Exception $e) {
+        }
+
+        $this->assertTrue(null === $newBug, 'Bug should not have been loaded, it should have been deleted.');
+
+    }
+
     public function testSessionFlushing() {
 
         $project = $this->getSession()->load('sample_Project', 12345);

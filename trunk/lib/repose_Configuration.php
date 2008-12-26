@@ -82,7 +82,6 @@ class repose_Configuration {
     }
     public function loadClass($clazz) {
         if ( ! class_exists($clazz) ) {
-            echo " [ should try to load class $clazz ]\n";
             if ( $this->autoload !== null ) {
                 call_user_func_array($this->autoload, array($clazz));
             }
