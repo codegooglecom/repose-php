@@ -8,6 +8,7 @@ class repose_ConfigurationProperty {
     protected $isObject;
     protected $isPrimaryKey;
     protected $className;
+    protected $foreignKey;
     public function __construct($configuration, $name, $config) {
         $this->configuration = $configuration;
         $this->name = $name;
@@ -25,6 +26,7 @@ class repose_ConfigurationProperty {
         if ( isset($config['columnName']) ) {
             $this->columnName = $config['columnName'];
         }
+        $this->foreignKey = isset($config['foreignKey']) ? $config['foreignKey'] : null;
     }
     public function getType() {
         return $this->type;
@@ -54,11 +56,31 @@ class repose_ConfigurationProperty {
         }
         return $this->columnName;
     }
+    public function getForeignKey() {
+        if ( $this->foreignKey === null ) {
+            if ( $this->isObject ) {
+                $config = $this->configuration->getForClass($this->className);
+                $primaryKeyDetails = $config->getPrimaryKeyDetails();
+                if ( $primaryKeyDetails['type'] == 'single' ) {
+                    $this->foreignKey = $primaryKeyDetails['property']->getColumnName();
+                } else {
+                    throw new Exception('Unable to handle composite primary key relationships.');
+                }
+            }
+            if ( $this->foreignKey === null ) {
+                $this->foreignKey = $this->getColumnName();
+            }
+        }
+        return $this->foreignKey;
+    }
     public function isObject() {
         return $this->isObject;
     }
     public function isPrimaryKey() {
         return $this->isPrimaryKey;
+    }
+    public function getClassName() {
+        return $this->className;
     }
     public function __destruct() {
         $this->configuration = null;
