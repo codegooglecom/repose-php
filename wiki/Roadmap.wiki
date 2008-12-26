@@ -1,4 +1,5 @@
 #summary Development Roadmap
+#labels Featured
 
 = 0.1 =
   * _Proxy generation and management_
