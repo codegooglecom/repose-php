@@ -20,7 +20,9 @@ class repose_Configuration {
             // TODO Get config information.
         } elseif ( isset($config['connection']['dsn']) ) {
             foreach ( array('dsn', 'username', 'password') as $dataSourceConfigKey ) {
-                $this->dataSourceConfig[$dataSourceConfigKey] = $config['connection'][$dataSourceConfigKey];
+                if ( isset($config['connection'][$dataSourceConfigKey]) ) {
+                    $this->dataSourceConfig[$dataSourceConfigKey] = $config['connection'][$dataSourceConfigKey];
+                }
             }
             $dsnParts = explode(':', $this->dataSourceConfig['dsn']);
             if ( count($dsnParts) ) {

@@ -49,7 +49,7 @@ class repose_Session {
                 if ( $property->isObject() and $value !== null ) {
                     // If this property is an object, and it is not null,
                     // we should save out that object and store its proxy.
-                    $value = $this->saveOrUpdate($value)->___reposeProxyPrimaryKey($this);
+                    $value = $this->saveOrUpdateInternal($value)->___reposeProxyPrimaryKey($this);
                 }
                 $nonPkPropertyValues[$property->getColumnName()] = $value;
             }
@@ -64,6 +64,10 @@ class repose_Session {
       * @param repose_IProxy|$object Object to save
       */
     public function save($object) {
+        $this->flush();
+        return $this->saveInternal($object);
+    }
+    private function saveInternal($object) {
 
         $object = $this->proxyGenerator->getProxyObject($object, $this);
 
@@ -100,22 +104,41 @@ class repose_Session {
         return $object;
     }
 
+    private function getUpdatedFields($object, $nonPkPropertyValues) {
+        $data = array();
+        $originalData = $this->proxyCache[$object->___reposeProxyOriginalClassName()][$object->___reposeProxyPrimaryKey($this)]['data'];
+        foreach ( $nonPkPropertyValues as $propertyName => $value ) {
+            if ( $originalData[$propertyName] !== $value ) {
+                $data[$propertyName] = $value;
+            }
+        }
+        return $data;
+    }
+
     /**
       * Update an object. Requires primary key to be set. If NULL primary key, an
       * exception is thrown.
       * @param repose_IProxy|$object Object to update
       */
     public function update($object) {
+        $this->flush();
+        return $this->updateInternal($object);
+    }
+    private function updateInternal($object) {
         $object = $this->proxyGenerator->getProxyObject($object, $this);
         if ( $object->___reposeProxyPrimaryKey($this) === null ) {
             throw new Exception("Cannot update object who has not already been saved (primary key is not set)");
         }
         $nonPkPropertyValues = $this->cascadeSaveOrUpdateGetValues($object);
+        $updatedFields = $this->getUpdatedFields($object, $nonPkPropertyValues);
+        // If there are no fields that need to be updated, we can just pass back
+        // the object right away.
+        if ( count($updatedFields) < 1 ) { return $object; }
         $classConfig = $this->getClassConfig($object);
         $query = 'UPDATE ' . $classConfig->getTableName() . ' SET ';
         $queryColumns = array();
         $queryValues = array();
-        foreach ( $nonPkPropertyValues as $columnName => $value ) {
+        foreach ( $updatedFields as $columnName => $value ) {
             $queryColumns[] = $columnName . ' = :' . $columnName;
             $queryValues[$columnName] = $value;
         }
@@ -135,11 +158,15 @@ class repose_Session {
       * @param repose_IProxy|$object Object to save or update
       */
     public function saveOrUpdate($object) {
+        $this->flush();
+        return $this->saveOrUpdateInternal($object);
+    }
+    private function saveOrUpdateInternal($object) {
         $object = $this->proxyGenerator->getProxyObject($object, $this);
         if ( $object->___reposeProxyPrimaryKey($this) === null ) {
-            return $this->save($object);
+            return $this->saveInternal($object);
         } else {
-            return $this->update($object);
+            return $this->updateInternal($object);
         }
     }
 
@@ -152,7 +179,11 @@ class repose_Session {
             $this->proxyCache[$clazz] = array();
         }
         $primaryKeyValue = $object->___reposeProxyPrimaryKey($this);
-        return $this->proxyCache[$clazz][$primaryKeyValue] = $object;
+        $this->proxyCache[$clazz][$primaryKeyValue] = array(
+            'object' => $object,
+            'data' => $object->___reposeProxyColumnData($this)
+        );
+        return $object;
     }
 
     public function createQuery($queryString) {
@@ -164,7 +195,7 @@ class repose_Session {
             $this->proxyCache[$clazz] = array();
         }
         if ( isset($this->proxyCache[$clazz][$primaryKeyValue]) ) {
-            return $this->proxyCache[$clazz][$primaryKeyValue];
+            return $this->proxyCache[$clazz][$primaryKeyValue]['object'];
         } else {
             if ( $getIfNotExists ) {
                 $primaryKeyDetails = $this->getClassConfig($clazz)->getPrimaryKeyDetails();
@@ -207,14 +238,22 @@ class repose_Session {
         return $this->proxyGenerator->getProxyObject($object, $this);
     }
 
-    public function flush() {
-    }
     public function getDataSource() {
         return $this->configuration->getDataSource();
     }
+
     public function assertClassLoaded($clazz) {
         $this->configuration->loadClass($clazz);
     }
+
+    public function flush() {
+        foreach ( $this->proxyCache as $clazz => $cacheInfo ) {
+            foreach ( $this->proxyCache[$clazz] as $primaryKeyValue => $objectInfo ) {
+                $this->saveOrUpdateInternal($objectInfo['object']);
+            }
+        }
+    }
+
 }
 
 ?>

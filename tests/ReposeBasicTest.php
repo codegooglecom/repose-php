@@ -286,6 +286,34 @@ CREATE TABLE bug (
 
     }
 
+    public function testSessionFlushing() {
+
+        $project = $this->getSession()->load('sample_Project', 12345);
+
+        $project->setName('Updated Project');
+
+        $newSessionOne = $this->sessionFactory->openSession();
+
+        $projectOne = $newSessionOne->load('sample_Project', 12345);
+
+        $this->assertNotEquals($project->getName(), $projectOne->getName());
+
+        $this->getSession()->flush();
+
+        $this->assertNotEquals($project->getName(), $projectOne->getName());
+
+        $newSessionTwo = $this->sessionFactory->openSession();
+
+        $projectTwo = $newSessionTwo->load('sample_Project', 12345);
+
+        $this->assertEquals($project->getName(), $projectTwo->getName());
+
+        $this->assertNotEquals($project->getName(), $projectOne->getName());
+
+        $this->assertNotEquals($projectTwo->getName(), $projectOne->getName());
+
+    }
+
 }
 
 ?>
