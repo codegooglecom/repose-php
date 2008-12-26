@@ -6,6 +6,16 @@
 The following is a quick sample of using Repose for a small model. The sample system has Users, Projects and Bugs. A Project has a User designated as its manager. A bug has a User designated as its Reporter, and optionally a User designated as its Owner.
 
 
+= Including =
+
+Including Repose in a project requires including `repose.php`, and that is all.
+
+{{{
+// Assumes repose.php exists in the include path
+require_once('repose.php');
+}}}
+
+
 = Models =
 
 The `sample_User` class defines the User model. The only access to the ID from outside of the class is by `getUserId()`.
