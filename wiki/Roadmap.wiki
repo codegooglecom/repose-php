@@ -1,13 +1,13 @@
 #summary Development Roadmap
 
 = 0.1 =
-  * Proxy generation and management
-  * Autoload hook for lazy loading of mapped classes
-  * Unit of Work
-  * CRUD
-  * Many-to-one relationships
+  * _Proxy generation and management_
+  * _Autoload hook for lazy loading of mapped classes_
+  * _Basic Unit of Work_
+  * CRUD (*C*, *R*, *U* implemented so far)
+  * _Many-to-one relationships_
+  * _Single field primary key_
   * One-to-many relationships
-  * Single field primary key
 
 = 0.2 =
   * Enhanced query language
