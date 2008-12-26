@@ -248,6 +248,11 @@ CREATE TABLE bug (
 
     public function testSampleQueries() {
 
+        $query = $this->getSession()->createQuery('FROM sample_Bug');
+        $bugs = $query->execute();
+
+        $this->assertEquals(1, count($bugs));
+
         $query = $this->getSession()->createQuery('FROM sample_Bug bug');
         $bugs = $query->execute();
 
@@ -272,7 +277,7 @@ CREATE TABLE bug (
         $this->assertEquals("Existing Bug", $bugs[0]->getTitle());
 
         $query = $this->getSession()->createQuery(
-            'SELECT bug.project FROM sample_Bug bug WHERE bug.project.manager.userId = :userId'
+            'SELECT bug.project FROM sample_Bug bug WHERE bug.owner.userId = :userId'
         );
 
         $projects = $query->execute(array('userId' => 55566));

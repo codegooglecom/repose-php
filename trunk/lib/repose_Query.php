@@ -199,6 +199,15 @@ class repose_Query {
             }
 
         }
+        if ( count($results) ) {
+            if ( is_array($results[0]) ) {
+                throw new Exception('Multiple return objects currently unsupported.');
+            } else {
+                // If getting back a list of single entries, we can use
+                // array_unique() to ensure we only get one of each.
+                $results = array_unique($results);
+            }
+        }
         return $results;;
 
     }
