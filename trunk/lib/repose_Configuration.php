@@ -62,6 +62,9 @@ class repose_Configuration {
     public function getForClass($clazz) {
         return $this->classes[$clazz];
     }
+    public function getPropertyForClass($clazz, $propertyName) {
+        return $this->classes[$clazz]->getProperty($propertyName);;
+    }
     public function buildSessionFactory() {
         return new repose_SessionFactory($this);
     }

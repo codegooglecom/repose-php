@@ -39,6 +39,9 @@ class repose_ConfigurationClass {
     public function getTableName() {
         return $this->tableName;
     }
+    public function getProperty($name) {
+        return $this->properties[$name];
+    }
     public function getPropertyNames() {
         return array_keys($this->properties);
     }

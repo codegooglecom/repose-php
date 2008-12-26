@@ -106,6 +106,15 @@ CREATE TABLE bug (
 )
 ');
 
+        $dataSource->exec('INSERT INTO user (userId, name) VALUES (100001, "firstUser")');
+        $dataSource->exec('INSERT INTO user (userId, name) VALUES (100002, "secondUser")');
+
+        $dataSource->exec('INSERT INTO user (userId, name) VALUES (55566, "existingManager")');
+        $dataSource->exec('INSERT INTO user (userId, name) VALUES (67387, "existingUser")');
+
+        $dataSource->exec('INSERT INTO project (projectId, name, managerUserId) VALUES (12345, "Existing Project", 55566)');
+        $dataSource->exec('INSERT INTO bug (bugId, title, body, projectId, reporterUserId, ownerUserId) VALUES (521152, "Existing Bug", "This bug existed from the time the database was created", 12345, 67387, 55566)');
+
     }
 
     public function testSimpleIdentity() {
@@ -124,8 +133,6 @@ CREATE TABLE bug (
 
 
     public function testSimpleArrayIdentity() {
-
-        $this->loadClass('sample_User');
 
         $userBeau = new sample_User('beau');
         $userDummy = new sample_User('beau');
@@ -187,6 +194,90 @@ CREATE TABLE bug (
         $bug->getOwner()->setName("beau updated");
 
         $this->getSession()->update($bug);
+
+        $this->assertTrue($bug->getOwner() === $bug->getProject()->getManager());
+
+        $loadedBug = $this->getSession()->load('sample_Bug', $bug->getBugId());
+
+        $this->assertTrue($bug === $loadedBug);
+
+        $loadedNullBug = null;
+
+        try {
+            $loadedNullBug = $this->getSession()->load('sample_Bug', -1);
+        } catch(Exception $e) {
+        }
+
+        $this->assertNull($loadedNullBug);
+
+    }
+
+    public function testLoadingExistingModel() {
+
+        $userOne = $this->getSession()->load('sample_User', 100001);
+        $userTwo = $this->getSession()->load('sample_User', 100002);
+
+        $this->assertNotNull($userOne);
+        $this->assertNotNull($userTwo);
+
+    }
+
+    public function testLoadExistingBug() {
+
+        $bug = $this->getSession()->load('sample_Bug', 521152);
+
+        $this->assertEquals('Existing Bug', $bug->getTitle());
+        $this->assertEquals('This bug existed from the time the database was created', $bug->getBody());
+
+        $this->assertEquals('existingUser', $bug->getReporter()->getName(), 'Reporter');
+        $this->assertEquals('existingManager', $bug->getOwner()->getName(), 'Owner');
+
+        $this->assertEquals('Existing Project', $bug->getProject()->getName(), 'Bug\'s Project\'s name does not match');
+        $this->assertEquals('existingManager', $bug->getProject()->getManager()->getName(), 'Manager');
+
+    }
+
+    public function testLoadExistingProject() {
+
+        $project = $this->getSession()->load('sample_Project', 12345);
+
+        $this->assertEquals('Existing Project', $project->getName());
+        $this->assertEquals('existingManager', $project->getManager()->getName(), 'Manager');
+
+    }
+
+    public function testSampleQueries() {
+
+        $query = $this->getSession()->createQuery('FROM sample_Bug bug');
+        $bugs = $query->execute();
+
+        $this->assertEquals(1, count($bugs));
+
+        $this->assertEquals("Existing Bug", $bugs[0]->getTitle());
+
+        $query = $this->getSession()->createQuery('FROM sample_User user WHERE user.name = :name');
+        $users = $query->execute(array('name' => 'existingManager'));
+
+        $this->assertEquals(1, count($users));
+        $this->assertEquals('existingManager', $users[0]->getName());
+
+        $query = $this->getSession()->createQuery(
+            'FROM sample_Bug bug WHERE bug.project.manager.userId = :userId'
+        );
+
+        $bugs = $query->execute(array('userId' => 55566));
+
+        $this->assertEquals(1, count($bugs));
+
+        $this->assertEquals("Existing Bug", $bugs[0]->getTitle());
+
+        $query = $this->getSession()->createQuery(
+            'SELECT bug.project FROM sample_Bug bug WHERE bug.project.manager.userId = :userId'
+        );
+
+        $projects = $query->execute(array('userId' => 55566));
+
+        $this->assertEquals("Existing Project", $projects[0]->getName());
 
     }
 

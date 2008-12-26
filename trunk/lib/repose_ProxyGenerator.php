@@ -14,10 +14,13 @@ class repose_ProxyGenerator {
         }
         return $clazz . '__ReposeProxy';
     }
-    private function assertProxyExists($object) {
+    private function assertProxyExists($object, $session) {
         if ( $object instanceof repose_IProxy ) return;
         $clazz = $this->getProxyClassName($object);
         if ( array_key_exists($clazz, self::$PROXIES_LOADED) ) return;
+        if ( ! is_object($object) ) {
+            $session->assertClassLoaded($object);
+        }
         eval($this->generateProxy($object));
         self::$PROXIES_LOADED[$clazz] = true;
     }
@@ -25,7 +28,7 @@ class repose_ProxyGenerator {
     // TODO Add __dstruct method.
     private $cache = array();
     private function castAsProxyObject($object, $session) {
-        $this->assertProxyExists($object);
+        $this->assertProxyExists($object, $session);
         $originalClass = get_class($object);
         if ( ! isset($this->cache[$originalClass]) ) {
             $this->cache[$originalClass] = array();
@@ -52,7 +55,7 @@ class repose_ProxyGenerator {
         return $this->castAsProxyObject($object, $session);
     }
     public function getProxyObjectFromData($clazz, $data, $session) {
-        $this->assertProxyExists($clazz);
+        $this->assertProxyExists($clazz, $session);
         $clazz = $this->getProxyClassName($clazz);
         $class = new ReflectionClass($clazz);
         $proxy = $class->newInstance();
