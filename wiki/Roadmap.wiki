@@ -5,7 +5,7 @@
   * _Proxy generation and management_
   * _Autoload hook for lazy loading of mapped classes_
   * _Basic Unit of Work_
-  * CRUD (*C*, *R*, *U* implemented so far)
+  * _CRUD_
   * _Many-to-one relationships_
   * _Single field primary key_
 
