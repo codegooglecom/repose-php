@@ -5,23 +5,26 @@
 
 The following is a quick sample of using Repose to perform queries.
 
+= Table of Contents =
+
+<wiki:toc max_depth="2" />
 
 = Examples =
 
-Get all Bugs.
+== Get all Bugs ==
 
 {{{
 $bugs = $session->createQuery('FROM sample_Bug')->execute();
 }}}
 
-Get all Bugs for a specific Project.
+== Get all Bugs for a specific Project ==
 
 {{{
 $query = $session->createQuery('sample_Bug bug WHERE bug.project.projectId = :projectId');
 $bugs = $query->execute(array('projectId' => $projectId));
 }}}
 
-Get all Bugs for a specific Project Manager.
+== Get all Bugs for a specific Project Manager ==
 
 {{{
 $query = $session->createQuery(
@@ -30,7 +33,7 @@ $query = $session->createQuery(
 $bugs = $query->execute(array('userId' => $userId));
 }}}
 
-Get all Projects for Bugs owned by a specific User.
+== Get all Projects for Bugs owned by a specific User ==
 
 {{{
 $query = $session->createQuery(
@@ -38,4 +41,3 @@ $query = $session->createQuery(
 );
 $projects = $query->execute(array('userId' => $userId));
 }}}
-
