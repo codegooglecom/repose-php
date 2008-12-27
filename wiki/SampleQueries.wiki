@@ -3,7 +3,7 @@
 
 = Introduction =
 
-The following is a quick sample of using Repose to perform queries.
+The following is a quick sample of using Repose to perform queries. These samples reference the domain model discussed on the [SampleCode Sample Code] page. Please see [SampleCode Sample Code] for information on the domain model used in these samples.
 
 = Table of Contents =
 
