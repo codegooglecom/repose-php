@@ -5,6 +5,9 @@
 
 The following is a quick sample of using Repose for a small model. The sample system has Users, Projects and Bugs. A Project has a User designated as its manager. A bug has a User designated as its Reporter, and optionally a User designated as its Owner.
 
+= Table of Contents =
+
+<wiki:toc max_depth="2" />
 
 = Including =
 
@@ -144,7 +147,7 @@ $session->save($bug);
 
 Calling `$session->save()` will cascade `repose_Session::saveOrUpdate()` the `sample_Bug` instance and all other object instances associated with the `sample_Bug`. In this case, it means that `$userBeau`, `$userJosh` and `$project` will be persisted automatically.
 
-== Configuration ==
+= Configuration =
 
 Repose requires configuration to map the Models to the database structure.
 
@@ -204,6 +207,8 @@ $configuration = new repose_Configuration(array(
 $sessionFactory = $configuration->buildSessionFactory();
 $session = $sessionFactory->getCurrentSession();
 }}}
+
+= Utility Singleton =
 
 It would be relatively trivial to create a Singleton helper class to get access to the current session without having to jump through these hoops in calling code.
 
