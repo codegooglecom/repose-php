@@ -12,6 +12,7 @@
 = 0.2 One-to-Many and Circular References =
   * One-to-many relationships
   * Circular many-to-one references
+  * Cache generated proxy classes
 
 = 0.3 Query and Relationship Enhancements =
   * Enhanced query language
