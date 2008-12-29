@@ -1,5 +1,5 @@
 <?php
-require_once(REPOSE_LIB . 'repose_ConfigurationProperty.php');
+require_once('repose_ConfigurationProperty.php');
 class repose_ConfigurationClass {
     protected $configuration;
     protected $name;
