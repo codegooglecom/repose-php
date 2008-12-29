@@ -1,9 +1,9 @@
 <?php
 
-require_once(REPOSE_LIB . 'repose_ProxyGenerator.php');
-require_once(REPOSE_LIB . 'repose_IProxy.php');
-require_once(REPOSE_LIB . 'repose_Configuration.php');
-require_once(REPOSE_LIB . 'repose_Query.php');
+require_once('repose_ProxyGenerator.php');
+require_once('repose_IProxy.php');
+require_once('repose_Configuration.php');
+require_once('repose_Query.php');
 
 class repose_Session {
 
