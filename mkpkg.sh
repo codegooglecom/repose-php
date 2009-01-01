@@ -63,13 +63,13 @@ rm -rf ${TMP_PKG_BASE} >/dev/null 2>&1
 
 for i in ${PACKAGE_NAME_BASE}.tar.gz ${PACKAGE_NAME_BASE}.zip
 do
-    ./googlecode_upload.php repose-php $i '${REPOSE_VISUAL_VERSION} (Libraries Only)' '${REPOSE_LABELS}'
+    ./googlecode_upload.php repose-php $i "${REPOSE_VISUAL_VERSION} (Libraries Only)" "${REPOSE_LABELS}"
 done
 
 
 for i in ${PACKAGE_NAME_BASE}-full.tar.gz ${PACKAGE_NAME_BASE}-full.zip
 do
-    ./googlecode_upload.php repose-php $i '${REPOSE_VISUAL_VERSION} (Full Package)' '${REPOSE_LABELS}'
+    ./googlecode_upload.php repose-php $i "${REPOSE_VISUAL_VERSION} (Full Package)" "${REPOSE_LABELS}"
 done
 
 
