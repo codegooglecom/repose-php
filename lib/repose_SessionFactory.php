@@ -1,7 +1,7 @@
 <?php
 
-require_once(REPOSE_LIB . 'repose_Configuration.php');
-require_once(REPOSE_LIB . 'repose_Session.php');
+require_once('repose_Configuration.php');
+require_once('repose_Session.php');
 
 class repose_SessionFactory {
     private $configuration;

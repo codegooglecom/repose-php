@@ -1,6 +1,6 @@
 <?php
-require_once(REPOSE_LIB . 'repose_ConfigurationClass.php');
-require_once(REPOSE_LIB . 'repose_SessionFactory.php');
+require_once('repose_ConfigurationClass.php');
+require_once('repose_SessionFactory.php');
 class repose_Configuration {
     private $dataSource = null;
     private $dataSourceConfig = array(
