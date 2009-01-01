@@ -2,6 +2,17 @@
 
 TMP_PKG_BASE=/tmp/repose-$$
 
+if ! test -e .googlecodeauth
+then
+    echo "Google Code auth information required."
+    echo -n 'Username: ';
+    read USERNAME
+    echo -n 'Password: ';
+    read PASSWORD
+    echo "$USERNAME:$PASSWORD" > .googlecodeauth
+    chmod 600 .googlecodeauth
+fi
+
 if test "$#" = "2"
 then
     if test "$1" = "tag"
@@ -16,7 +27,7 @@ then
     fi
 else
     REPOSE_SVN_VERSION=trunk
-    REPOSE_FILENAME_VERSION=snapshot-`date +%Y%m%d%H%M%S`
+    REPOSE_FILENAME_VERSION=repose-snapshot-`date +%Y%m%d%H%M%S`
     REPOSE_VISUAL_VERSION="Repose PHP ORM Trunk Snapshot"
 fi
 
@@ -50,15 +61,15 @@ svn export http://repose-php.googlecode.com/svn/${REPOSE_SVN_VERSION} ${TMP_PKG}
 
 rm -rf ${TMP_PKG_BASE} >/dev/null 2>&1
 
-for i in ${PACKAGE_NAME_BASE}.tar.gz ${PACKAGE_NAME_BASE}.tar.bz ${PACKAGE_NAME_BASE}.zip
+for i in ${PACKAGE_NAME_BASE}.tar.gz ${PACKAGE_NAME_BASE}.zip
 do
-    echo "googlecode_upload.py -s '${REPOSE_VISUAL_VERSION} (Libraries Only)' -p repose-php -l ${REPOSE_LABELS} $i"
+    ./googlecode_upload.php repose-php $i '${REPOSE_VISUAL_VERSION} (Libraries Only)' '${REPOSE_LABELS}'
 done
 
 
-for i in ${PACKAGE_NAME_BASE}-full.tar.gz ${PACKAGE_NAME_BASE}-full.tar.bz ${PACKAGE_NAME_BASE}-full.zip
+for i in ${PACKAGE_NAME_BASE}-full.tar.gz ${PACKAGE_NAME_BASE}-full.zip
 do
-    echo "googlecode_upload.py -s '${REPOSE_VISUAL_VERSION} (Full Package)' -p repose-php -l ${REPOSE_LABELS} $i"
+    ./googlecode_upload.php repose-php $i '${REPOSE_VISUAL_VERSION} (Full Package)' '${REPOSE_LABELS}'
 done
 
 
