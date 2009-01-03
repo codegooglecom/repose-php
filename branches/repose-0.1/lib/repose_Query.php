@@ -203,9 +203,15 @@ class repose_Query {
             if ( is_array($results[0]) ) {
                 throw new Exception('Multiple return objects currently unsupported.');
             } else {
-                // If getting back a list of single entries, we can use
-                // array_unique() to ensure we only get one of each.
-                $results = array_unique($results);
+                $nonUniqueResults = $results;
+                $results = array();
+                foreach ( $nonUniqueResults as $result ) {
+                    if ( ! in_array($result, $results, true) ) {
+                        $results[] = $result;
+                    } else {
+                        echo " [ already found ]\n";
+                    }
+                }
             }
         }
         return $results;;
