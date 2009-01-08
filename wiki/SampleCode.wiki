@@ -9,15 +9,6 @@ The following is a quick sample of using Repose for a small model. The sample sy
 
 <wiki:toc max_depth="2" />
 
-= Including =
-
-Including Repose in a project requires including `repose.php`, and that is all.
-
-{{{
-// Assumes repose.php exists in the include path
-require_once('repose.php');
-}}}
-
 
 = Models =
 
