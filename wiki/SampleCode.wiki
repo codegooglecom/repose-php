@@ -274,7 +274,7 @@ class MyProjectReposeUtil {
         return self::$sessionFactory;
     }
     static public function getSession() {
-        return self::getSessionFactory().getCurrentSession();
+        return self::getSessionFactory()->getCurrentSession();
     }
 }
 }}}
