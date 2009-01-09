@@ -269,7 +269,7 @@ class MyProjectReposeUtil {
     }
     static public function getSessionFactory() {
         if ( self::$sessionFactory === null ) {
-            self::$sessionFactory = self::getConfiguration().buildSessionFactory();
+            self::$sessionFactory = self::getConfiguration()->buildSessionFactory();
         }
         return self::$sessionFactory;
     }
