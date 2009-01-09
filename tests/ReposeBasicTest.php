@@ -34,18 +34,6 @@ class ReposeBasicTest extends AbstractReposeTest {
                     ),
                 ),
 
-                'sample_ProjectInfo' => array(
-                    'tableName' => 'projectInfo',
-                    'properties' => array(
-                        'projectInfoId' => array( 'primaryKey' => 'true', ),
-                        'description' => null,
-                        'project' => array(
-                            'relationship' => 'one-to-one',
-                            'className' => 'sample_Project',
-                        ),
-                    ),
-                ),
-
                 'sample_Bug' => array(
                     'tableName' => 'bug',
                     'properties' => array(
@@ -90,7 +78,6 @@ class ReposeBasicTest extends AbstractReposeTest {
 
         $dataSource->exec('DROP TABLE IF EXISTS user');
         $dataSource->exec('DROP TABLE IF EXISTS project');
-        $dataSource->exec('DROP TABLE IF EXISTS projectInfo');
         $dataSource->exec('DROP TABLE IF EXISTS bug');
 
         $dataSource->exec('
@@ -105,14 +92,6 @@ CREATE TABLE project (
     projectId INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     managerUserId INTEGER NOT NULL
-)
-');
-
-        $dataSource->exec('
-CREATE TABLE projectInfo (
-    projectInfoId INTEGER PRIMARY KEY AUTOINCREMENT,
-    projectId INTEGER NOT NULL,
-    description TEXT NOT NULL
 )
 ');
 
@@ -353,6 +332,11 @@ CREATE TABLE bug (
 
         $this->assertNotEquals($projectTwo->getName(), $projectOne->getName());
 
+    }
+
+    public function testMultipleObjectsReturnedByQuery() {
+        $users = $this->getSession()->createQuery('FROM sample_User user')->execute();
+        $this->assertEquals(4, count($users));
     }
 
 }
