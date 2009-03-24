@@ -355,6 +355,11 @@ CREATE TABLE bug (
 
     }
 
+    public function testMultipleObjectsReturnedByQuery() {
+        $users = $this->getSession()->createQuery('FROM sample_User user')->execute();
+        $this->assertEquals(4, count($users));
+    }
+
 }
 
 ?>
