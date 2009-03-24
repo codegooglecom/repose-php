@@ -37,7 +37,7 @@ class repose_Session {
     }
 
     public function set($object) {
-        return $this->storeProxyObject($object);
+        return $this->storeProxyObject($this->castAsProxy($object));
     }
 
     private function cascadeSaveOrUpdateGetValues($object) {
