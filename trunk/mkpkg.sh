@@ -47,7 +47,7 @@ svn export http://repose-php.googlecode.com/svn/${REPOSE_SVN_VERSION}/lib ${TMP_
 
 ( cd ${TMP_PKG_BASE}; tar czf ${PACKAGE_NAME_BASE}.tar.gz ${REPOSE_FILENAME_VERSION} ) >/dev/null 2>&1
 ( cd ${TMP_PKG_BASE}; tar cjf ${PACKAGE_NAME_BASE}.tar.bz ${REPOSE_FILENAME_VERSION} ) >/dev/null 2>&1
-( cd ${TMP_PKG_BASE}; zip ${PACKAGE_NAME_BASE}.zip ${REPOSE_FILENAME_VERSION} ) >/dev/null 2>&1
+( cd ${TMP_PKG_BASE}; zip -r ${PACKAGE_NAME_BASE}.zip ${REPOSE_FILENAME_VERSION} ) >/dev/null 2>&1
 
 
 rm -rf ${TMP_PKG_BASE} >/dev/null 2>&1
@@ -57,7 +57,7 @@ svn export http://repose-php.googlecode.com/svn/${REPOSE_SVN_VERSION} ${TMP_PKG}
 
 ( cd ${TMP_PKG_BASE}; tar czf ${PACKAGE_NAME_BASE}-full.tar.gz ${REPOSE_FILENAME_VERSION} ) >/dev/null 2>&1
 ( cd ${TMP_PKG_BASE}; tar cjf ${PACKAGE_NAME_BASE}-full.tar.bz ${REPOSE_FILENAME_VERSION} ) >/dev/null 2>&1
-( cd ${TMP_PKG_BASE}; zip ${PACKAGE_NAME_BASE}-full.zip ${REPOSE_FILENAME_VERSION} ) >/dev/null 2>&1
+( cd ${TMP_PKG_BASE}; zip -r ${PACKAGE_NAME_BASE}-full.zip ${REPOSE_FILENAME_VERSION} ) >/dev/null 2>&1
 
 rm -rf ${TMP_PKG_BASE} >/dev/null 2>&1
 
