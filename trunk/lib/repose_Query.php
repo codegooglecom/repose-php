@@ -176,7 +176,7 @@ class repose_Query {
 
                     $parentObject = $objects[$parent];
 
-                    $parentObject['object']->___reposeProxySetter($propertyName, $objectInfo['object']);
+                    $parentObject['object']->___reposeProxySetter($propertyName, $objectInfo['object'], $this->session);
 
                 } else {
                     if ( $this->selectResults === null ) {
@@ -265,7 +265,6 @@ class repose_Query {
         if ( $this->where ) {
             $sql .= ' WHERE ' . $this->where;
         }
-
 
         return $sql;
 

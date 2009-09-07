@@ -27,15 +27,17 @@ class repose_ProxyGenerator {
     // TODO Should make sure to flush cache when session closes!
     // TODO Add __dstruct method.
     private $cache = array();
-    private function castAsProxyObject($object, $session) {
+    private function castAsProxyObject($object, $session, $forceNew = false) {
         $this->assertProxyExists($object, $session);
         $originalClass = get_class($object);
         if ( ! isset($this->cache[$originalClass]) ) {
             $this->cache[$originalClass] = array();
         }
-        foreach ( $this->cache[$originalClass] as $cachedItem ) {
-            if ( $cachedItem['originalObject'] == $object ) {
-                return $cachedItem['proxyObject'];
+        if ( ! $forceNew ) {
+            foreach ( $this->cache[$originalClass] as $cachedItem ) {
+                if ( $cachedItem['originalObject'] == $object ) {
+                    return $cachedItem['proxyObject'];
+                }
             }
         }
         $clazz = $this->getProxyClassName($object);
@@ -48,11 +50,11 @@ class repose_ProxyGenerator {
         );
         return $proxy;
     }
-    public function getProxyObject($object, $session) {
+    public function getProxyObject($object, $session, $forceNew = false) {
         // TODO: We might want to ensure that we pass back the proxy for
         // this particular session?
         if ( $object instanceof repose_IProxy ) return $object;
-        return $this->castAsProxyObject($object, $session);
+        return $this->castAsProxyObject($object, $session, $forceNew);
     }
     public function getProxyObjectFromData($clazz, $data, $session) {
         $this->assertProxyExists($clazz, $session);
@@ -83,8 +85,11 @@ class repose_ProxyGenerator {
         $c .= '    public function ___reposeProxyOriginalClassName() {' . "\n";
         $c .= '        return \'' . $clazz . '\';' . "\n";
         $c .= '    }' . "\n";
-        $c .= '    public function ___reposeProxySetter($prop, $value = null) {' . "\n";
+        $c .= '    public function ___reposeProxySetter($prop, $value = null, $session = null) {' . "\n";
         $c .= '        $this->$prop = $value;' . "\n";
+        $c .= '        if ( $session !== null ) {' . "\n";
+        $c .= '            $session->setProxyProperty($this, $prop, $value);' . "\n";
+        $c .= '        }' . "\n";
         $c .= '    }' . "\n";
         $c .= '    public function ___reposeProxyGetter($prop) {' . "\n";
         $c .= '        return $this->$prop;' . "\n";

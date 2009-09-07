@@ -63,13 +63,13 @@ class repose_Session {
       * exception is thrown.
       * @param repose_IProxy|$object Object to save
       */
-    public function save($object) {
+    public function save($object, $forceNew = false) {
         $this->flush();
-        return $this->saveInternal($object);
+        return $this->saveInternal($object, $forceNew);
     }
-    private function saveInternal($object) {
+    private function saveInternal($object, $forceNew) {
 
-        $object = $this->proxyGenerator->getProxyObject($object, $this);
+        $object = $this->proxyGenerator->getProxyObject($object, $this, $forceNew);
 
         if ( $object->___reposeProxyPrimaryKey($this) !== null ) {
             throw new Exception("Cannot save object who has already been saved (primary key already set)");
@@ -164,7 +164,7 @@ class repose_Session {
     private function saveOrUpdateInternal($object) {
         $object = $this->proxyGenerator->getProxyObject($object, $this);
         if ( $object->___reposeProxyPrimaryKey($this) === null ) {
-            return $this->saveInternal($object);
+            return $this->saveInternal($object, false);
         } else {
             return $this->updateInternal($object);
         }
@@ -184,6 +184,14 @@ class repose_Session {
             'data' => $object->___reposeProxyColumnData($this)
         );
         return $object;
+    }
+
+    public function setProxyProperty(repose_IProxy $object, $property, $value = null) {
+        $clazz = $object->___reposeProxyOriginalClassName();
+        $primaryKeyValue = $object->___reposeProxyPrimaryKey($this);
+        $prop = $this->getClassConfig($object)->getProperty($property);
+        $f = $this->proxyCache[$clazz][$primaryKeyValue]['data'][$prop->getColumnName()] =
+            is_object($value) ? $value->___reposeProxyPrimaryKey($this) : $value;
     }
 
     public function createQuery($queryString) {
@@ -249,13 +257,8 @@ class repose_Session {
     public function delete($object) {
         $object = $this->proxyGenerator->getProxyObject($object, $this);
         if ( $object->___reposeProxyPrimaryKey($this) === null ) {
-            throw new Exception("Cannot update object who has not already been saved (primary key is not set)");
+            throw new Exception("Cannot delete object who has not already been saved (primary key is not set)");
         }
-        $nonPkPropertyValues = $this->cascadeSaveOrUpdateGetValues($object);
-        $updatedFields = $this->getUpdatedFields($object, $nonPkPropertyValues);
-        // If there are no fields that need to be updated, we can just pass back
-        // the object right away.
-        if ( count($updatedFields) < 1 ) { return $object; }
         $classConfig = $this->getClassConfig($object);
         $query = 'DELETE FROM ' . $classConfig->getTableName();
         $queryValues = array();
