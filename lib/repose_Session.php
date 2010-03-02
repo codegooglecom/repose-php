@@ -198,7 +198,10 @@ class repose_Session {
         return new repose_Query($this, $queryString);
     }
 
-    public function load($clazz, $primaryKeyValue, $getIfNotExists = true) {
+    public function load($clazz, $primaryKeyValue = null, $getIfNotExists = true) {
+        if ( $primaryKeyValue === null ) {
+            return null;
+        }
         if ( ! isset($this->proxyCache[$clazz]) ) {
             $this->proxyCache[$clazz] = array();
         }
@@ -266,7 +269,7 @@ class repose_Session {
         $query .= ' WHERE ' . $primaryKeyDetails['property']->getColumnName() . ' = :' . $primaryKeyDetails['property']->getColumnName();
         $queryValues[$primaryKeyDetails['property']->getColumnName()] = $object->___reposeProxyGetter( $primaryKeyDetails['property']->getName() );
         $statement = $this->configuration->getDataSource()->prepare($query);
-        $statement->execute($queryValues);
+        return $statement->execute($queryValues);
     }
 
     public function flush() {

@@ -147,6 +147,9 @@ class repose_Query {
                     $select = $this->select[$selectIdx];
                     $objectData[$select['propertyName']]= $row[$select['actualAlias']];
                 }
+                if ( ! $objectData[$from['primaryKeyPropertyName']] ) {
+                    continue;
+                }
                 $object = $this->session->load(
                     $from['className'],
                     $objectData[$from['primaryKeyPropertyName']],
