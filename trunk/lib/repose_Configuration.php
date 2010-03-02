@@ -77,6 +77,10 @@ class repose_Configuration {
                 $this->dataSourceConfig['username'],
                 $this->dataSourceConfig['password']
             );
+            $this->dataSource->setAttribute(
+                PDO::ATTR_ERRMODE,
+                PDO::ERRMODE_EXCEPTION
+            );
         }
         return $this->dataSource;
     }
