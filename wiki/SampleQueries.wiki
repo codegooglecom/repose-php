@@ -1,5 +1,5 @@
 #summary Sample Queries
-#labels Featured
+#labels Deprecated
 
 = Introduction =
 
