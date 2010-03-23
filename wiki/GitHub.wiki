@@ -1,0 +1,5 @@
+#summary What is GitHub?
+
+= GitHub =
+
+GitHub is the best way to participate in that collaboration: fork projects, send pull requests, create issues, and monitor development with all of your public and private code. This project's source is hosted on GitHub: http://github.com/dflydev/repose-php
