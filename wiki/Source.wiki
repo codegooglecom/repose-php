@@ -1,0 +1,9 @@
+#summary Source
+
+= Current =
+
+The source for Repose lives on GitHub here: http://github.com/dflydev/repose-php
+
+= Legacy =
+
+The original Repose code is still available on the Google Code project [http://code.google.com/p/repose-php/source/browse/ here].
