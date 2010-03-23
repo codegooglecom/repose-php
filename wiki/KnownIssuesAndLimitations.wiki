@@ -1,4 +1,5 @@
 #summary Known Issues and Limitations
+#labels Deprecated
 
 = Introduction =
 
