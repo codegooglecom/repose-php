@@ -1,5 +1,5 @@
 #summary Development Roadmap
-#labels Featured
+#labels Deprecated
 
 = 0.1 CRUD and Essentials =
   * _Proxy generation and management_
