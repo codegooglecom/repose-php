@@ -1,5 +1,5 @@
 #summary Sample Code
-#labels Deprecated
+#labels Featured
 
 = Introduction =
 
@@ -12,104 +12,47 @@ The following is a quick sample of using Repose for a small model. The sample sy
 
 = Models =
 
-The `sample_User` class defines the User model. The only access to the ID from outside of the class is by `getUserId()`.
+The `sample_User` class defines the User model.
 
 {{{
 class sample_User {
-    protected $userId;
-    protected $name;
+    public $userId;
+    public $name;
     public function __construct($name) {
-        $this->name = $name;
-    }
-    public function getUserId() {
-        return $this->userId;
-    }
-    public function getName() {
-        return $this->name;
-    }
-    public function setName($name) {
         $this->name = $name;
     }
 }
 }}}
 
-The `sample_Project` class defines the Project model. The only access to the ID from outside of the class is by `getProjectId()`. It references a manager object that is supposed to be an instance of `sample_User`.
+The `sample_Project` class defines the Project model. It references a manager object that is supposed to be an instance of `sample_User`.
 
 {{{
 class sample_Project {
-    protected $projectId;
-    protected $name;
-    protected $manager;
+    public $projectId;
+    public $name;
+    public $manager;
     public function __construct($name, $manager) {
         $this->name = $name;
         $this->manager = $manager;
     }
-    public function getProjectId() {
-        return $this->projectId;
-    }
-    public function getName() {
-        return $this->name;
-    }
-    public function setName($name) {
-        $this->name = $name;
-    }
-    public function getManager() {
-        return $this->manager;
-    }
-    public function setManager($manager) {
-        $this->manager = $manager;
-    }
 }
 }}}
 
-The `sample_Bug` class defines the Bug model. The only access to the ID from outside of the class is by `getBugId()`. It references a project (`sample_Project` instance), reporter (`sample_User` instance) and owner (`sample_User` instance, optional ) objects.
+The `sample_Bug` class defines the Bug model. It references a project (`sample_Project` instance), reporter (`sample_User` instance) and owner (`sample_User` instance, optional ) objects.
 
 {{{
 class sample_Bug {
-    protected $bugId;
-    protected $title;
-    protected $body;
-    protected $projectId;
-    protected $reporter;
-    protected $owner;
+    public $bugId;
+    public $title;
+    public $body;
+    public $project;
+    public $reporter;
+    public $owner;
     public function __construct($project, $title, $body, $reporter, $owner = null) {
         $this->project = $project;
         $this->title = $title;
         $this->body = $body;
         $this->reporter = $reporter;
-        $this->owner = $owner;
-    }
-    public function getBugId() {
-        return $this->bugId;
-    }
-    public function getProject() {
-        return $this->project;
-    }
-    public function setProject($project) {
-        $this->project = $project;
-    }
-    public function getTitle() {
-        return $this->title;
-    }
-    public function setTitle($title) {
-        $this->title = $title;
-    }
-    public function getBody() {
-        return $this->body;
-    }
-    public function setBody($body) {
-        $this->body = $body;
-    }
-    public function getReporter() {
-        return $this->reporter;
-    }
-    public function setReporter($reporter) {
-        $this->reporter = $reporter;
-    }
-    public function getOwner() {
-        return $this->owner;
-    }
-    public function setOwner($owner) {
         $this->owner = $owner;
     }
 }
@@ -133,10 +76,13 @@ $bug = new sample_Bug(
     $userBeau // Owner
 );
 
-$session->save($bug);
+$session->add($bug);
+$session->flush();
 }}}
 
-Calling `$session->save()` will cascade `repose_Session::saveOrUpdate()` the `sample_Bug` instance and all other object instances associated with the `sample_Bug`. In this case, it means that `$userBeau`, `$userJosh` and `$project` will be persisted automatically.
+Calling `$session->flush()` will flush all of the instances added to the session. If instances are already persisted, they will be updated (think `UPDATE WHERE`). If instances have never been persisted, they will be added to the data source (think `INSERT INTO`).
+
+In this case, two users, one project and one bug will be added to the data source.
 
 = Configuration =
 
@@ -158,6 +104,19 @@ $configuration = new repose_Configuration(array(
                     'relationship' => 'many-to-one',
                     'className' => 'sample_User',
                     'columnName' => 'managerUserId',
+                    //'foreignKey' => 'userId', // should get this itself!
+                ),
+            ),
+        ),
+
+        'sample_ProjectInfo' => array(
+            'tableName' => 'projectInfo',
+            'properties' => array(
+                'projectInfoId' => array( 'primaryKey' => 'true', ),
+                'description' => null,
+                'project' => array(
+                    'relationship' => 'one-to-one',
+                    'className' => 'sample_Project',
                 ),
             ),
         ),
@@ -171,16 +130,20 @@ $configuration = new repose_Configuration(array(
                 'project' => array(
                     'relationship' => 'many-to-one',
                     'className' => 'sample_Project',
+                    //'columnName' => 'projectId', // should get this itself!
+                    //'foreignKey' => 'userId', // should get this itself!
                 ),
                 'reporter' => array(
                     'relationship' => 'many-to-one',
                     'className' => 'sample_User',
                     'columnName' => 'reporterUserId',
+                    //'foreignKey' => 'userId', // should get this itself!
                 ),
                 'owner' => array(
                     'relationship' => 'many-to-one',
                     'className' => 'sample_User',
                     'columnName' => 'ownerUserId',
+                    //'foreignKey' => 'userId', // should get this itself!
                 ),
             ),
         ),
@@ -195,93 +158,7 @@ $configuration = new repose_Configuration(array(
 
     ),
 ));
-$sessionFactory = $configuration->buildSessionFactory();
-$session = $sessionFactory->getCurrentSession();
-}}}
 
-= Utility Singleton =
-
-It would be relatively trivial to create a Singleton helper class to get access to the current session without having to jump through these hoops in calling code.
-
-{{{
-class MyProjectReposeUtil {
-    static private $configuration = null;
-    static private $sessionFactory = null;
-    static public function getConfiguration() {
-        if ( self::$configuration === null ) {
-            self::$configuration = new repose_Configuration(array(
-
-                'autoload' => array($this, 'loadClass'),
-
-                'connection' => array( 'dsn' => 'sqlite:' . dirname(__FILE__) . DIRECTORY_SEPARATOR . 'ReposeBasicTest.sq3', ),
-
-                'classes' => array(
-
-                    'sample_Project' => array(
-                        'tableName' => 'project',
-                        'properties' => array(
-                            'projectId' => array( 'primaryKey' => 'true', ),
-                            'name' => null,
-                            'manager' => array(
-                                'relationship' => 'many-to-one',
-                                'className' => 'sample_User',
-                                'columnName' => 'managerUserId',
-                                //'foreignKey' => 'userId', // should get this itself!
-                            ),
-                        ),
-                    ),
-
-                    'sample_Bug' => array(
-                        'tableName' => 'bug',
-                        'properties' => array(
-                            'bugId' => array( 'primaryKey' => 'true', ),
-                            'title' => null,
-                            'body' => null,
-                            'project' => array(
-                                'relationship' => 'many-to-one',
-                                'className' => 'sample_Project',
-                            ),
-                            'reporter' => array(
-                                'relationship' => 'many-to-one',
-                                'className' => 'sample_User',
-                                'columnName' => 'reporterUserId',
-                            ),
-                            'owner' => array(
-                                'relationship' => 'many-to-one',
-                                'className' => 'sample_User',
-                                'columnName' => 'ownerUserId',
-                            ),
-                        ),
-                    ),
-
-                    'sample_User' => array(
-                        'tableName' => 'user',
-                        'properties' => array(
-                            'userId' => array( 'primaryKey' => 'true', ),
-                            'name' => null,
-                        ),
-                    ),
-
-                ),
-            ));
-        }
-        return self::$configuration;
-    }
-    static public function getSessionFactory() {
-        if ( self::$sessionFactory === null ) {
-            self::$sessionFactory = self::getConfiguration()->buildSessionFactory();
-        }
-        return self::$sessionFactory;
-    }
-    static public function getSession() {
-        return self::getSessionFactory()->getCurrentSession();
-    }
-}
-}}}
-
-This utility class could be used like this anywhere the Repose session is needed.
-
-{{{
-$session = MyProjectReposeUtil::getSession();
-$session->save($bug);
+$sessionFactory = new repose_ConfigurationSessionFactory($configuration);
+$session = $sessionFactory->currentSession();
 }}}
