@@ -1,0 +1,118 @@
+#summary Repose PHP ORM - Sample Usage
+= Sample Usage =
+
+Repose aims to be provide a simple interface to object persistence. The following are some simple usage examples to provide an idea how even a simple application could leverage Repose.
+
+Make sure to check out the [Manual], [SampleCode sample code] and [SampleQueries sample queries] pages for additional quick examples of how to use Repose.
+
+== Basic Model Snippet ==
+
+The most basic model compatible with Repose is one that has at least one public property defined. Repose interacts with these properties directly to hydrate and persist instances of mapped clases.
+
+{{{
+<?php
+class sample_Project {
+    public $projectId;
+    public $name;
+    public $manager;
+    public $bugs;
+    public function __construct($name, $manager) {
+        $this->name = $name;
+        $this->manager = $manager;
+        $this->bugs = array();
+    }
+
+}
+?>
+}}}
+
+== Creating New Content Snippet ==
+
+Creating new content with Repose is as simple as creating objects, combining them as needed, and adding an object to a Repose session and flushing it. The following code does what one might expect. It creates four records, two user records, a project record and a bug record.
+
+{{{
+<?php
+$userBeau = new sample_User('beau');
+$userJosh = new sample_User('josh');
+
+$project = new sample_Project('Sample Project', $userBeau);
+
+$bug = new sample_Bug(
+    $project,
+    'Something is broken',
+    'Click http://example.com/ to test!',
+    $userJosh, // Reporter
+    $userBeau // Owner
+);
+
+$session->add($bug);
+$session->flush();
+?>
+}}}
+
+== Querying With Query String Interface Snippet ==
+
+In this example, the project whose ID is 5 is found. Its name is displayed and the title of any bugs associated with it are displayed.
+
+The traditional query string interface is used here. Repose translates the classes and properties to tables and column names so that from the application perspective, the only thing it needs to know about are the classes and how they relate.
+
+{{{
+<?php
+$project = $session->execute(
+    'FROM sample_Project WHERE projectId = :projectId',
+    array('projectid' => 5)
+)->one();
+print "Name: " . $project->name . "\n";
+foreach ( $project->bugs as $bug ) {
+    print " * " . $bug->title . "\n";
+}
+?>
+}}}
+
+== Querying With Fluid Interface Snippet ==
+
+In this example, the project whose ID is 5 is found. Its name is displayed and the title of any bugs associated with it are displayed.
+
+The fluid query interface is used here. Much like the query string interface, Repose translates the classes and properties to tables and column names.
+
+{{{
+<?php
+$project = $session->find('sample_Project project')->filterBy('projectId', 5)->one();
+print "Name: " . $project->name . "\n";
+foreach ( $project->bugs as $bug ) {
+    print " * " . $bug->title . "\n";
+}
+?>
+}}}
+
+== Configuration Snippet ==
+
+The `repose_Configuration` class provides a simple PHP array based configuration interface for Repose. A Repose session will be able to persist instances of any of the classes mapped.
+
+{{{
+<?php
+$configuration = new repose_Configuration(array(
+    'classes' => array(
+
+        'sample_Project' => array(
+            'tableName' => 'project',
+            'properties' => array(
+                'projectId' => array( 'primaryKey' => 'true', ),
+                'name' => null,
+                'manager' => array(
+                    'relationship' => 'many-to-one',
+                    'className' => 'sample_User',
+                    'columnName' => 'managerUserId',
+                ),
+                'bugs' => array(
+                    'relationship' => 'one-to-many',
+                    'className' => 'sample_Bug',
+                    'backref' => 'project',
+                    'cascade' => 'delete-orphan',
+                ),
+            ),
+        ),
+    ),
+));
+?>
+}}}
