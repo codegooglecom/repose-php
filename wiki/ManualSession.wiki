@@ -60,7 +60,7 @@ Deletes are not atomic. They will not be deleted from the data store until `repo
 
 A Session tracks changes to the objects that have been added until the Session is flushed. Assuming a SQL data store is in place, it is at this point that INSERT, UPDATE and DELETE statements are issued to the database.
 
-Until a Session is Flushed, all changes to the persisted state of the objects in the Session are safe and secure. At any point a Session can be destroyed and the data will remain unchanged.
+Until a Session is Flushed, all changes to the persisted state of the objects in the Session are temporary. At any point a Session can be destroyed and the data in the data store will remain unchanged.
 
 == Querying for Objects from a Session ==
 
