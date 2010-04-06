@@ -1,4 +1,5 @@
 #summary Overview of Repose PHP ORM
+#sidebar ManualNavigation
 
 = Overview =
 
