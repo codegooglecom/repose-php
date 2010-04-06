@@ -1,0 +1,9 @@
+#summary Repose PHP ORM - Configuration Session Factory
+#sidebar ManualNavigation
+
+[ManualSessionFactory Previous: Session Factory] | Configuration Session Factory
+= Session Factory =
+
+
+----
+[ManualSessionFactory Previous: Session Factory] | Configuration Session Factory
