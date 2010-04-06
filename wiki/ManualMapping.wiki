@@ -6,7 +6,7 @@
 
 Repose operates on the theory that a a class and its properties can be mapped to a table and its columns. If this assumption can be held true for a project, then Repose is likely a good fit. If not, another tool may be better suited.
 
-Internally, Repose relies on an instance of `repose_Mapping` to define this mapping. It does so by instances of `repose_MappedClass`, `repose_MappedClassProperty` and `repose_MappedClassPrimaryKey'. A mapping can either be programmed by hand or it can be handled by another step as is done by `repose_Configuration`. Check out the [ManualConfigurationSessionFactory Configuration Session Factory to see `repose_Configuration` in action.
+Internally, Repose relies on an instance of `repose_Mapping` to define this mapping. It does so by instances of `repose_MappedClass`, `repose_MappedClassProperty` and `repose_MappedClassPrimaryKey`. A mapping can either be programmed by hand or it can be handled by another step as is done by `repose_Configuration`. Check out the [ManualConfigurationSessionFactory Configuration Session Factory] to see `repose_Configuration` in action.
 
 == Configuration Mapping ==
 
