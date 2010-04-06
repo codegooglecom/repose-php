@@ -1,7 +1,7 @@
 #summary Repose PHP ORM - Session
 #sidebar ManualNavigation
 
-[ManualOverview Previous: Overview] | Session | [ManualMapping Next: Mapping]
+[ManualOverview << Overview] | *Session* | [ManualMapping Mapping >>]
 = Session =
 
 A Repose Session is an interface to a collection of objects that either have been persisted or are intended to be persisted. Sessions maintain their state and the state of the objects it knows about transparently so that the objects it manages do not need to be aware of Repose, or the fact that it is in a session, in any way.
@@ -19,4 +19,4 @@ Think of Repose as a transactional database of objects and think of a Session as
 == Querying for Objects from a Session ==
 
 ----
-[ManualOverview Previous: Overview] | Session | [ManualMapping Next: Mapping]
+[ManualOverview << Overview] | *Session* | [ManualMapping Mapping >>]
