@@ -1,4 +1,5 @@
 #summary Manual Navigation
+#labels Deprecated
 *Repose PHP ORM Manual*
  * [ManualOverview Overview]
  * [ManualSession Session]
