@@ -1,9 +1,124 @@
 #summary Repose PHP ORM - Mapping
 #sidebar ManualNavigation
 
-[ManualSession Previous: Session] | Mapping | [ManualEngine Next: Engine]
+[ManualSession << Session] | *Mapping* | [ManualEngine Engine >>]
 = Mapping =
 
+Repose operates on the theory that a a class and its properties can be mapped to a table and its columns. If this assumption can be held true for a project, then Repose is likely a good fit. If not, another tool may be better suited.
+
+Internally, Repose relies on an instance of `repose_Mapping` to define this mapping. It does so by instances of `repose_MappedClass`, `repose_MappedClassProperty` and `repose_MappedClassPrimaryKey'. A mapping can either be programmed by hand or it can be handled by another step as is done by `repose_Configuration`. Check out the [ManualConfigurationSessionFactory Configuration Session Factory to see `repose_Configuration` in action.
+
+== Configuration Mapping ==
+
+A simple configuration mapping consists of an associative array with the mapped class names as the keys and an associative array containing two keys, `tableName` and `properties`. The value of `properties` is an associative array containing the properties for the class. The `$propertySetup` will either be `null` or an associative array of configuration settings.
+
+{{{
+$configuration = array(
+    'classname' => array(
+        'tableName' => 'tablename',
+        'properties' => array(
+            'propertyname' => $propertySetup
+        )
+    )
+);
+}}}
+
+Class 'classname' has a property 'propertyname' that maps to table 'tablename' and column 'propertyname'.
+
+=== Property setup: null ===
+
+In the case of `null`, the property is determined to be a simple primitive property whose column name is the same name as the property.
+
+{{{
+// The 'name' property is a simple primitive 
+// The 'name' property maps to a column named 'name'
+array( 'name' => null )
+}}}
+
+=== Property setup key: columnName ===
+
+If specified, this value will be used as the column name for this property. Useful if the object does not mirror the database completely.
+
+{{{
+// The 'name' property maps to a column named 'project_name'
+array( 'name' => 'project_name' )
+}}}
+
+=== Property setup key: relationship ===
+
+If specified, this property is treated differently than a normal property. It will either refer to a single object (`many-to-one`) or it will refer to a collection of objects (`one-to-many`).
+
+==== many-to-one relationship ====
+
+In the following example, the `manager` property is being defined as a `many-to-one` relationship. What this means is that `$object->manager` should return a `sample_User` instance (if one is defined).
+
+{{{
+array(
+    'manager' => array(
+        'relationship' => 'many-to-one',
+        'className' => 'sample_User',
+    ),
+)
+}}}
+
+==== one-to-many relationship ====
+
+In the following example, the `bugs` property is being defined as a `one-to-many` relationship. What this means is that `$object->bugs` should return an array of `sample_Bug` instances.
+
+The `backref` setting is meant to indicate that on `sample_Bug`, there is a property called `project` that references back to this relationship. In this way, any time a new `sample_Bug` is created where the `project` is set to a given instance, the `sample_Bug` instance will automatically be added to the project as well.
+
+{{{
+array(
+    'bugs' => array(
+        'relationship' => 'one-to-many',
+        'className' => 'sample_Bug',
+        'backref' => 'project',
+        'cascade' => 'delete-orphan',
+    )
+)
+}}}
+
+
+=== Property setup key: className ===
+
+For relationships, this value defines the class to which the property refers.
+
+=== Property setup key: backref ===
+
+Used by `one-to-many relationships` to define which property on the related entity refers back to this property.
+
+=== Property setup key: foreignKey ===
+
+The name of the property on the other end of a relationship that the relationship should reference. If not specified, the primary key of the foreign class is automatically selected.
+
+=== Property setup key: primaryKey ===
+
+Determines if the property should be considered part of the primary key for the class. More than one property may have the primaryKey flag set to achieve composite primary keys for a class.
+
+== Manual Mapping ==
+
+Mapping can also be handled manually. This would be useful if for some reason Configuration Mapping will not work or for some reason does not make sense. The ability to handle mapping manually will also lead to the ability to create XML based configuration parsers or a declarative system allowing for mapping to be defined inline with model classes in their PHPDoc.
+
+{{{
+$mapping = new repose_Mapping();
+$properties = array(
+    'projectId' => array( 'primaryKey' => 'true', ),
+    'name' => null,
+    'manager' => array(
+        'relationship' => 'many-to-one',
+        'className' => 'sample_User',
+        'columnName' => 'managerUserId',
+    ),
+    'bugs' => array(
+        'relationship' => 'one-to-many',
+        'className' => 'sample_Bug',
+        'backref' => 'project',
+        'cascade' => 'delete-orphan',
+    )
+);
+$mappedClass = new repose_MappedClass('sample_Project', 'project', $properties);
+$mapping->addMappedClass($mappedClass);
+}}}
 
 ----
-[ManualSession Previous: Session] | Mapping | [ManualEngine Next: Engine]
+[ManualSession << Session] | *Mapping* | [ManualEngine Engine >>]
