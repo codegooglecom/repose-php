@@ -2,7 +2,7 @@
 #sidebar ManualNavigation
 
 [ManualSessionFactory Previous: Session Factory] | Configuration Session Factory
-= Session Factory =
+= Configuration Session Factory =
 
 
 ----
