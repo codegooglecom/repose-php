@@ -1,0 +1,9 @@
+#summary Overview of Repose PHP ORM
+
+= Overview =
+
+Repose is an Object-Relational Mapping (ORM) library for PHP5. It aims to provide a transparent unobtrusive persistence layer to PHP developers.
+
+Users of Repose will spend most of their time interfacing with a Repose [ManualSession Session]. A Session is defined by a class [ManualMapping Mapping], a persistence [ManualEngine Engine] and an [ManualAutoloader Autoloader]. The task of constructing a Session from the appropriate Mapping, Engine and Autoloader combination may be handled by a [ManualSessionFactory Session Factory].
+
+The easiest way to get started with Repose is to take advantage of an existing Session Factory such as the [ManualConfigurationSessionFactory Configuration Session Factory].
