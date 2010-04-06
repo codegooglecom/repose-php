@@ -9,6 +9,6 @@
    * [ManualSession#Querying_for_Objects_from_a_Session Querying] 
  * [ManualMapping Mapping]
  * [ManualEngine Engine]
- * [ManualAutloader Autoloader]
+ * [ManualAutoloader Autoloader]
  * [ManualSessionFactory Session Factory]
  * [ManualConfigurationSessionFactory Configuration Session Factory]
