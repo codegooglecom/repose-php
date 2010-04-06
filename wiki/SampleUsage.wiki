@@ -1,4 +1,5 @@
 #summary Repose PHP ORM - Sample Usage
+#labels Featured
 = Sample Usage =
 
 Repose aims to be provide a simple interface to object persistence. The following are some simple usage examples to provide an idea how even a simple application could leverage Repose.
