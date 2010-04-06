@@ -3,7 +3,10 @@
 *Repose PHP ORM Manual*
  * [ManualOverview Overview]
  * [ManualSession Session]
-   * [ManualSession#Adding_Objects_to_a_Session Adding Objects to a Session] 
+   * [ManualSession#Adding_Objects_to_a_Session add() - Adding Objects to a Session] 
+   * [ManualSession#Deleting_Objects_from_a_Session delete() - Deleting Objects from a Session] 
+   * [ManualSession#Flushing_a_Session flush() - Flushing Changes] 
+   * [ManualSession#Querying_for_Objects_from_a_Session query(), execute() and find() - Querying] 
  * [ManualMapping Mapping]
  * [ManualEngine Engine]
  * [ManualAutloader Autoloader]
