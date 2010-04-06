@@ -1,0 +1,9 @@
+#summary Repose PHP ORM - Autoloader
+#sidebar ManualNavigation
+
+[ManualEngine Previous: Engine] | Autoloader | [ManualSessionFactory Next: Session Factory]
+= Autoloader =
+
+
+----
+[ManualEngine Previous: Engine] | Autoloader | [ManualSessionFactory Next: Session Factory]
