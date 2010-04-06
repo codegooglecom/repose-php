@@ -1,6 +1,5 @@
 #summary Manual Navigation
-
-= Manual =
+*Repose PHP ORM Manual*
  * [ManualOverview Overview]
  * [ManualSession Session]
  * [ManualMapping Mapping]
