@@ -7,5 +7,5 @@
  * [ManualMapping Mapping]
  * [ManualEngine Engine]
  * [ManualAutloader Autoloader]
- * [ManualSessionFactories Session Factories]
+ * [ManualSessionFactory Session Factory]
  * [ManualConfigurationSessionFactory Configuration Session Factory]
