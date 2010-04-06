@@ -95,10 +95,29 @@ $configuration = new repose_Configuration(array(
 
 // Create a Session Factory
 $sessionFactory = new repose_ConfigurationSessionFactory($configuration);
-
-// Get the current Session
-$session = $sessionFactory->currentSession();
 }}}
 
+Given the Configuration and Configuration Session Factory defined above, the following snippet of code would work.
+
+{{{
+// Get the current Session from the Session Factory
+$session = $sessionFactory->currentSession();
+
+$userBeau = new sample_User('beau');
+$userJosh = new sample_User('josh');
+
+$project = new sample_Project('Sample Project', $userBeau);
+
+$bug = new sample_Bug(
+    $project,
+    'Something is broken',
+    'Click http://example.com/ to test!',
+    $userJosh, // Reporter
+    $userBeau // Owner
+);
+
+$bug = $session->add($bug);
+$session->flush();
+}}}
 ----
 [ManualSessionFactory << Session Factory] | *Configuration Session Factory*
