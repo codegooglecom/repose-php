@@ -4,7 +4,7 @@
 
 == Command-line access ==
 
-The source for Repose [http://github.com/dflydev/repose-php lives on GitHub]. Use this command to anonymously check out the latest project source code:
+The source for Repose PHP ORM [http://github.com/dflydev/repose-php lives on GitHub]. Use this command to anonymously check out the latest project source code:
 
 {{{
 git clone git://github.com/dflydev/repose-php.git
