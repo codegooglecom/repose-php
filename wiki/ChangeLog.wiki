@@ -1,4 +1,5 @@
 #summary Changes between versions
+#labels Featured
 
 = 0.0.6 =
 
