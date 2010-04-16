@@ -1,0 +1,13 @@
+#summary Changes between versions
+
+= 0.0.6 =
+
+ * Addressed simplify query builder issue (issue #7)
+
+= 0.0.5 =
+
+ * Addressed issue with reflection properties not working and causing an exception (issue #6)
+
+= 0.0.4 =
+
+ * Changed how reflection properties were gathered and stored (issue #5)
