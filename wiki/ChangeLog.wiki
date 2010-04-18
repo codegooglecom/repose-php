@@ -1,14 +1,25 @@
 #summary Changes between versions
 #labels Featured
 
-= 0.0.6 =
+= Upcoming Releases =
+
+== 0.0.7  ==
+
+ * Deleting entities will pay attention to cascade rules (issue #8)
+ * Download packages will have classes in main directory instead of under `lib` subdirectory.
+
+= Current Release =
+
+== 0.0.6 ==
 
  * Addressed simplify query builder issue (issue #7)
 
-= 0.0.5 =
+= Old Releases =
+
+== 0.0.5 ==
 
  * Addressed issue with reflection properties not working and causing an exception (issue #6)
 
-= 0.0.4 =
+== 0.0.4 ==
 
  * Changed how reflection properties were gathered and stored (issue #5)
