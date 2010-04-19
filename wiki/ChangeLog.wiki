@@ -6,6 +6,7 @@
 == 0.0.7  ==
 
  * Deleting entities will pay attention to cascade rules (issue #8)
+ * Enhance the fluent interface: limit, offset, orderBy (issue #9)
  * Download packages will have classes in main directory instead of under `lib` subdirectory.
 
 = Current Release =
