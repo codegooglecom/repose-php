@@ -1,6 +1,12 @@
 #summary Changes between versions
 #labels Featured
 
+= Current Release =
+
+== 0.0.6 ==
+
+ * Addressed simplify query builder issue (issue #7)
+
 = Upcoming Releases =
 
 == 0.0.7  ==
@@ -8,14 +14,11 @@
  * Additional fixes relating to query builder (issue #7)
  * Deleting entities will pay attention to cascade rules (issue #8)
  * Enhance the fluent interface: limit, offset, orderBy (issue #9)
- * Handle array input for values on filtering for fluent query (issue #10)
  * Download packages will have classes in main directory instead of under `lib` subdirectory.
 
-= Current Release =
+== 0.0.7  ==
 
-== 0.0.6 ==
-
- * Addressed simplify query builder issue (issue #7)
+ * Handle array input for values on filtering for fluent query (issue #10)
 
 = Old Releases =
 
