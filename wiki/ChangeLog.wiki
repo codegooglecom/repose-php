@@ -3,11 +3,9 @@
 
 = Current Release =
 
-== 0.0.7  ([http://code.google.com/p/repose-php/issues/list?q=milestone:0.0.7 issues]) ==
+== 0.0.7.1 ==
 
- * Additional fixes relating to query builder (issue #7)
- * Enhance the fluent interface: limit, offset, orderBy (issue #9)
- * Download packages will have classes in main directory instead of under `lib` subdirectory.
+ * Bugfix to an Exception thrown on `flush()` (issue #13)
 
 = Upcoming Releases =
 
@@ -15,9 +13,14 @@
 
  * Deleting entities will pay attention to cascade rules (issue #8)
  * Handle array input for values on filtering for fluent query (issue #10)
- * Bugfix to an Exception thrown on `flush()` (issue #13)
 
 = Old Releases =
+
+== 0.0.7  ([http://code.google.com/p/repose-php/issues/list?q=milestone:0.0.7 issues]) ==
+
+ * Additional fixes relating to query builder (issue #7)
+ * Enhance the fluent interface: limit, offset, orderBy (issue #9)
+ * Download packages will have classes in main directory instead of under `lib` subdirectory.
 
 == 0.0.6 ([http://code.google.com/p/repose-php/issues/list?q=milestone:0.0.6 issues]) ==
 
