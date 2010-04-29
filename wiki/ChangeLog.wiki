@@ -15,6 +15,7 @@
 
  * Deleting entities will pay attention to cascade rules (issue #8)
  * Handle array input for values on filtering for fluent query (issue #10)
+ * Bugfix to an Exception thrown on `flush()` (issue #13)
 
 = Old Releases =
 
