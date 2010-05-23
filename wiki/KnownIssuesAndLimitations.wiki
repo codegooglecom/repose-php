@@ -1,5 +1,5 @@
 #summary Known Issues and Limitations
-#labels Deprecated
+#labels Deprecated,Featured
 
 = Known Issues and Limitations =
 
