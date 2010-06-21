@@ -13,6 +13,7 @@
 
  * Deleting entities will pay attention to cascade rules (issue #8)
  * Handle array input for values on filtering for fluent query (issue #10)
+ * Handle column naming as string as opposed to requiring array (issue #15)
 
 = Old Releases =
 
