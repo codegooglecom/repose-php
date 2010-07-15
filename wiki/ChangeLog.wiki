@@ -11,8 +11,8 @@
 
 == 0.0.8  ([http://code.google.com/p/repose-php/issues/list?q=milestone:0.0.8 issues]) ==
 
- * Deleting entities will pay attention to cascade rules (issue #8)
- * Handle array input for values on filtering for fluent query (issue #10)
+ * *warning* Major updates to how query parsing. Could have some bugs to shake out.
+ * Circular relationships are now "safe."
  * Handle column naming as string as opposed to requiring array (issue #15)
 
 = Old Releases =
