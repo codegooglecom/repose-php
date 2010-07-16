@@ -13,6 +13,7 @@
 
  * *warning* Major updates to how query parsing. Could have some bugs to shake out.
  * Circular relationships are now "safe."
+ * Reference object properties when not rooted (issue #14)
  * Handle column naming as string as opposed to requiring array (issue #15)
 
 = Old Releases =
