@@ -16,6 +16,10 @@
  * Reference object properties when not rooted (issue #14)
  * Handle column naming as string as opposed to requiring array (issue #15)
 
+== 0.0.9  ([http://code.google.com/p/repose-php/issues/list?q=milestone:0.0.9 issues]) ==
+
+ * Collections should have non-lazy loading options/prefetching (issue #12)
+
 = Old Releases =
 
 == 0.0.7  ([http://code.google.com/p/repose-php/issues/list?q=milestone:0.0.7 issues]) ==
