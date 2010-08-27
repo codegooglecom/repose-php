@@ -15,6 +15,7 @@
 == 0.0.9  ([http://code.google.com/p/repose-php/issues/list?q=milestone:0.0.9 issues]) ==
 
  * Collections should have non-lazy loading options/prefetching (issue #12)
+ * Non-Autoincrement primary keys (issue #2)
 
 = Old Releases =
 
