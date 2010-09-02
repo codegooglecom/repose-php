@@ -16,6 +16,7 @@
 
  * Collections should have non-lazy loading options/prefetching (issue #12)
  * Non-Autoincrement primary keys (issue #2)
+ * Being able to specify autoloader from repose_Configuration (issue #16)
 
 = Old Releases =
 
