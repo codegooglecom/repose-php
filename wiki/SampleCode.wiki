@@ -161,3 +161,132 @@ $configuration = new repose_Configuration(array(
 $sessionFactory = new repose_ConfigurationSessionFactory($configuration);
 $session = $sessionFactory->currentSession();
 }}}
+
+= Everything =
+
+Here is everything put together in order.
+
+{{{
+class sample_User {
+    public $userId;
+    public $name;
+    public function __construct($name) {
+        $this->name = $name;
+    }
+}
+
+class sample_Project {
+    public $projectId;
+    public $name;
+    public $manager;
+    public function __construct($name, $manager) {
+        $this->name = $name;
+        $this->manager = $manager;
+    }
+}
+
+class sample_Bug {
+    public $bugId;
+    public $title;
+    public $body;
+    public $project;
+    public $reporter;
+    public $owner;
+    public function __construct($project, $title, $body, $reporter, $owner = null) {
+        $this->project = $project;
+        $this->title = $title;
+        $this->body = $body;
+        $this->reporter = $reporter;
+        $this->owner = $owner;
+    }
+}
+
+$configuration = new repose_Configuration(array(
+
+    'connection' => array( 'dsn' => 'sqlite:database.sq3' ),
+
+    'classes' => array(
+
+        'sample_Project' => array(
+            'tableName' => 'project',
+            'properties' => array(
+                'projectId' => array( 'primaryKey' => 'true', ),
+                'name' => null,
+                'manager' => array(
+                    'relationship' => 'many-to-one',
+                    'className' => 'sample_User',
+                    'columnName' => 'managerUserId',
+                    //'foreignKey' => 'userId', // should get this itself!
+                ),
+            ),
+        ),
+
+        'sample_ProjectInfo' => array(
+            'tableName' => 'projectInfo',
+            'properties' => array(
+                'projectInfoId' => array( 'primaryKey' => 'true', ),
+                'description' => null,
+                'project' => array(
+                    'relationship' => 'one-to-one',
+                    'className' => 'sample_Project',
+                ),
+            ),
+        ),
+
+        'sample_Bug' => array(
+            'tableName' => 'bug',
+            'properties' => array(
+                'bugId' => array( 'primaryKey' => 'true', ),
+                'title' => null,
+                'body' => null,
+                'project' => array(
+                    'relationship' => 'many-to-one',
+                    'className' => 'sample_Project',
+                    //'columnName' => 'projectId', // should get this itself!
+                    //'foreignKey' => 'userId', // should get this itself!
+                ),
+                'reporter' => array(
+                    'relationship' => 'many-to-one',
+                    'className' => 'sample_User',
+                    'columnName' => 'reporterUserId',
+                    //'foreignKey' => 'userId', // should get this itself!
+                ),
+                'owner' => array(
+                    'relationship' => 'many-to-one',
+                    'className' => 'sample_User',
+                    'columnName' => 'ownerUserId',
+                    //'foreignKey' => 'userId', // should get this itself!
+                ),
+            ),
+        ),
+
+        'sample_User' => array(
+            'tableName' => 'user',
+            'properties' => array(
+                'userId' => array( 'primaryKey' => 'true', ),
+                'name' => null,
+            ),
+        ),
+
+    ),
+));
+
+$sessionFactory = new repose_ConfigurationSessionFactory($configuration);
+$session = $sessionFactory->currentSession();
+
+$userBeau = new sample_User('beau');
+$userJosh = new sample_User('josh');
+
+$project = new sample_Project('Sample Project', $userBeau);
+
+$bug = new sample_Bug(
+    $project,
+    'Something is broken',
+    'Click http://example.com/ to test!',
+    $userJosh, // Reporter
+    $userBeau // Owner
+);
+
+$session->add($bug);
+$session->flush();
+}}}
