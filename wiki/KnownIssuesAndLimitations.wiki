@@ -3,6 +3,6 @@
 
 = Known Issues and Limitations =
 
-== Circular references are not supported ==
+== Delete cascade ==
 
-Repose is currently unable to handle circular many-to-one or one-to-one relationships (issue 1).
+There seems to be an issue with deletes not cascading properly.
