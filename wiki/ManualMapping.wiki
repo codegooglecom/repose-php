@@ -87,6 +87,10 @@ For relationships, this value defines the class to which the property refers.
 
 Used by `one-to-many relationships` to define which property on the related entity refers back to this property.
 
+=== Property setup key: lazy ===
+
+By default collections are lazy loaded. By specifically setting lazy to be false, the collection will be loaded in one go right as the object is loaded. This can lead to a considerable amount of time saved on querying for collections' objects.
+
 === Property setup key: foreignKey ===
 
 The name of the property on the other end of a relationship that the relationship should reference. If not specified, the primary key of the foreign class is automatically selected.
