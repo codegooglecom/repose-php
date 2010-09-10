@@ -95,6 +95,22 @@ The name of the property on the other end of a relationship that the relationshi
 
 Determines if the property should be considered part of the primary key for the class. More than one property may have the primaryKey flag set to achieve composite primary keys for a class.
 
+=== Property setup key: generator ===
+
+For primary keys only, defines how the primary key value will be generated. Can be passed a string (assigned, auto, uuid), a class name (must implement repose_IPropertyGenerator or extedn repose_AbstractPropertyGenerator) or an object (must implement repose_IPropertyGenerator or extedn repose_AbstractPropertyGenerator).
+
+==== auto ====
+
+Will set the property to the last insert ID after the persist (INSERT) operation. Default if no generator specified. 
+
+==== assigned ====
+
+Assumes that the ID has already been specified by the caller. This is useful in the case where the primary key is a natural key and a surrogate key is not required.
+
+==== uuid ====
+
+Will generate a v4 UUID as soon as the object is added to the session.
+
 == Manual Mapping ==
 
 Mapping can also be handled manually. This would be useful if for some reason Configuration Mapping will not work or for some reason does not make sense. The ability to handle mapping manually will also lead to the ability to create XML based configuration parsers or a declarative system allowing for mapping to be defined inline with model classes in their PHPDoc.
