@@ -16,6 +16,13 @@ The following is an example of a Configuration Session Factory in use. This code
 // Create a new Configuration instance
 $configuration = new repose_Configuration(array(
 
+    // Object that implements repose_IAutoloader
+    // 'autoloader' => $myCustomAutoloader,
+
+    // Class that implements repose_IAutoloader
+    // (for obvious reasons, this class must already exist)
+    // 'autloaderClass' => 'my_CustomReposeAutoloader',
+
     // Define the connection params for the PDO Engine.
     'connection' => array(
         'driver' => 'mysql',
