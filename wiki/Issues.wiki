@@ -1,0 +1,3 @@
+= Issues =
+
+Repose issues are now tracked on the [http://redmine.dflydev.com/projects/repose/issues Repose PHP ORM Redmine].
