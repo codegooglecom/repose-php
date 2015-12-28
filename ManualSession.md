@@ -1,0 +1,114 @@
+[<< Overview](ManualOverview.md) | **Session** | [Mapping >>](ManualMapping.md)
+# Session #
+
+A Repose Session is an interface to a collection of objects that either have been persisted or are intended to be persisted. Sessions maintain their state and the state of the objects it knows about transparently so that the objects it manages do not need to be aware of Repose, or the fact that it is in a session, in any way.
+
+What does this mean to a developer using Repose?
+
+Think of Repose as a transactional database of objects and think of a Session as an interface to this database of objects. Objects can be added through a Session. Objects can be deleted through a Session. Objects can be queried through a session.
+
+## Adding Objects to a Session ##
+
+Objects must be added to a Session in order to be persisted. All objects queried from a Session are automatically added to a Session. Objects may safely be added to a Session multiple times as the Session is able to detect that an object is already added.
+
+If an object instance is passed whose class has properties that refer to other classes, the Session will transparently replace those object values with proxies as well.
+
+Adding objects is handled by `repose_Session::add()`. The return value is the proxy object that represents the object added to the Session. Changes made to the proxy object are tracked by the session and will be pushed to the data store when `repose_Session::flush()` is called.
+
+```
+// Add a project instance to a Session
+$project = $session->add($project);
+```
+
+If the object needs to be accessed after it has been added to the Session, it is important to use the proxy object for all future calls as changes to the actual original object will not be tracked and will be lost. For example:
+
+```
+$project = new Project("Original name");
+$session->add($project);
+$project->name = "New name"; // Session will lose this change!
+$session->flush();
+```
+
+Do this instead:
+
+```
+$project = new Project("Original name");
+$project = $session->add($project);
+$project->name = "New name"; // Session will NOT lose this change!
+$session->flush();
+```
+
+New additions are not atomic. They will not be added to the data store until `repose_Session::flush()` is called.
+
+## Deleting Objects from a Session ##
+
+Objects existing in a Session may either be new (having just been added) or previously persisted. In either case, objects that have not been deleted from a Session will be inserted or updated in the data store upon `repose_Session::flush()`. To delete an object (and its persisted record) they must be deleted from the session using `repose_Session::delete()`.
+
+```
+// Delete the persisted data for the specified $bug
+$session->delete($bug);
+```
+
+Repose has the ability to cascade delete operations under certain circumstances. These are described in [Mapping](ManualMapping.md).
+
+Deletes are not atomic. They will not be deleted from the data store until `repose_Session::flush()` is called.
+
+## Flushing a Session ##
+
+A Session tracks changes to the objects that have been added until the Session is flushed. Assuming a SQL data store is in place, it is at this point that INSERT, UPDATE and DELETE statements are issued to the database.
+
+Until a Session is Flushed, all changes to the persisted state of the objects in the Session are temporary. At any point a Session can be destroyed and the data in the data store will remain unchanged.
+
+## Querying for Objects from a Session ##
+
+Queries executed on a Session will return hydrated proxy instances of the requested classes from the data store. The constructor for these objects is not actually called. There are two primary query interfaces for Sessions.
+
+### String Based Query ###
+
+Repose puts a very minimal filter over "standard" SQL by supporting the mapped class and property names in place of the actual underlying table and column names. It also supports some magic features like being able to reference an "object" as long as the referenced object has a single field primary key.
+
+There are two main ways to handle string based queries. A `repose_Query` object can be returned from `repose_Session::query()`.
+
+```
+$query = $session->query('Project project WHERE project.owner = :manager');
+$projects = $query->execute(array('manager' => $manager))->all();
+```
+
+Alternately, `repose_Session::execute()` may be called to handle the creation of a `repose_Query` instance and execute it in one step.
+
+```
+$projects = $session->execute(
+    'Project project WHERE project.manager = :manager',
+    array('manager' => $manager)
+);
+```
+
+### Fluent Query ###
+
+Repose supports a fluent query interface by way of the `repose_FluidQuery` class. A fluid query can be created by calling `repose_Session::find()`on a Session and specifying the type of return objects desired.
+
+```
+// Query all projects
+$projects = $session->find('Project')->all();
+```
+
+```
+// Query one project matching specific criteria
+$project = $session->find('Project')->filterBy('projectId', 5)->one();
+```
+
+```
+// Query all projects matching specific criteria
+$project = $session->find('Project project')->filterBy(array(
+    'project.manager' => $manager
+))->all();
+```
+
+### More Examples ###
+
+For more examples see the SampleQueries page.
+
+
+---
+
+[<< Overview](ManualOverview.md) | **Session** | [Mapping >>](ManualMapping.md)

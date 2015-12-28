@@ -1,0 +1,290 @@
+# Introduction #
+
+The following is a quick sample of using Repose for a small model. The sample system has Users, Projects and Bugs. A Project has a User designated as its manager. A bug has a User designated as its Reporter, and optionally a User designated as its Owner.
+
+# Table of Contents #
+
+
+
+
+# Models #
+
+The `sample_User` class defines the User model.
+
+```
+class sample_User {
+    public $userId;
+    public $name;
+    public function __construct($name) {
+        $this->name = $name;
+    }
+}
+```
+
+The `sample_Project` class defines the Project model. It references a manager object that is supposed to be an instance of `sample_User`.
+
+```
+class sample_Project {
+    public $projectId;
+    public $name;
+    public $manager;
+    public function __construct($name, $manager) {
+        $this->name = $name;
+        $this->manager = $manager;
+    }
+}
+```
+
+The `sample_Bug` class defines the Bug model. It references a project (`sample_Project` instance), reporter (`sample_User` instance) and owner (`sample_User` instance, optional ) objects.
+
+```
+class sample_Bug {
+    public $bugId;
+    public $title;
+    public $body;
+    public $project;
+    public $reporter;
+    public $owner;
+    public function __construct($project, $title, $body, $reporter, $owner = null) {
+        $this->project = $project;
+        $this->title = $title;
+        $this->body = $body;
+        $this->reporter = $reporter;
+        $this->owner = $owner;
+    }
+}
+```
+
+# Calling Code #
+
+Using Repose is done primarily through a `repose_Session` instance. A quick example of creating `sample_User`, `sample_Project` and `sample_Bug` instances and persisting them is  below.
+
+```
+$userBeau = new sample_User('beau');
+$userJosh = new sample_User('josh');
+
+$project = new sample_Project('Sample Project', $userBeau);
+
+$bug = new sample_Bug(
+    $project,
+    'Something is broken',
+    'Click http://example.com/ to test!',
+    $userJosh, // Reporter
+    $userBeau // Owner
+);
+
+$session->add($bug);
+$session->flush();
+```
+
+Calling `$session->flush()` will flush all of the instances added to the session. If instances are already persisted, they will be updated (think `UPDATE WHERE`). If instances have never been persisted, they will be added to the data source (think `INSERT INTO`).
+
+In this case, two users, one project and one bug will be added to the data source.
+
+# Configuration #
+
+Repose requires configuration to map the Models to the database structure.
+
+```
+$configuration = new repose_Configuration(array(
+
+    'connection' => array( 'dsn' => 'sqlite:database.sq3' ),
+
+    'classes' => array(
+
+        'sample_Project' => array(
+            'tableName' => 'project',
+            'properties' => array(
+                'projectId' => array( 'primaryKey' => 'true', ),
+                'name' => null,
+                'manager' => array(
+                    'relationship' => 'many-to-one',
+                    'className' => 'sample_User',
+                    'columnName' => 'managerUserId',
+                    //'foreignKey' => 'userId', // should get this itself!
+                ),
+            ),
+        ),
+
+        'sample_ProjectInfo' => array(
+            'tableName' => 'projectInfo',
+            'properties' => array(
+                'projectInfoId' => array( 'primaryKey' => 'true', ),
+                'description' => null,
+                'project' => array(
+                    'relationship' => 'one-to-one',
+                    'className' => 'sample_Project',
+                ),
+            ),
+        ),
+
+        'sample_Bug' => array(
+            'tableName' => 'bug',
+            'properties' => array(
+                'bugId' => array( 'primaryKey' => 'true', ),
+                'title' => null,
+                'body' => null,
+                'project' => array(
+                    'relationship' => 'many-to-one',
+                    'className' => 'sample_Project',
+                    //'columnName' => 'projectId', // should get this itself!
+                    //'foreignKey' => 'userId', // should get this itself!
+                ),
+                'reporter' => array(
+                    'relationship' => 'many-to-one',
+                    'className' => 'sample_User',
+                    'columnName' => 'reporterUserId',
+                    //'foreignKey' => 'userId', // should get this itself!
+                ),
+                'owner' => array(
+                    'relationship' => 'many-to-one',
+                    'className' => 'sample_User',
+                    'columnName' => 'ownerUserId',
+                    //'foreignKey' => 'userId', // should get this itself!
+                ),
+            ),
+        ),
+
+        'sample_User' => array(
+            'tableName' => 'user',
+            'properties' => array(
+                'userId' => array( 'primaryKey' => 'true', ),
+                'name' => null,
+            ),
+        ),
+
+    ),
+));
+
+$sessionFactory = new repose_ConfigurationSessionFactory($configuration);
+$session = $sessionFactory->currentSession();
+```
+
+# Everything #
+
+Here is everything put together in order.
+
+```
+class sample_User {
+    public $userId;
+    public $name;
+    public function __construct($name) {
+        $this->name = $name;
+    }
+}
+
+class sample_Project {
+    public $projectId;
+    public $name;
+    public $manager;
+    public function __construct($name, $manager) {
+        $this->name = $name;
+        $this->manager = $manager;
+    }
+}
+
+class sample_Bug {
+    public $bugId;
+    public $title;
+    public $body;
+    public $project;
+    public $reporter;
+    public $owner;
+    public function __construct($project, $title, $body, $reporter, $owner = null) {
+        $this->project = $project;
+        $this->title = $title;
+        $this->body = $body;
+        $this->reporter = $reporter;
+        $this->owner = $owner;
+    }
+}
+
+$configuration = new repose_Configuration(array(
+
+    'connection' => array( 'dsn' => 'sqlite:database.sq3' ),
+
+    'classes' => array(
+
+        'sample_Project' => array(
+            'tableName' => 'project',
+            'properties' => array(
+                'projectId' => array( 'primaryKey' => 'true', ),
+                'name' => null,
+                'manager' => array(
+                    'relationship' => 'many-to-one',
+                    'className' => 'sample_User',
+                    'columnName' => 'managerUserId',
+                    //'foreignKey' => 'userId', // should get this itself!
+                ),
+            ),
+        ),
+
+        'sample_ProjectInfo' => array(
+            'tableName' => 'projectInfo',
+            'properties' => array(
+                'projectInfoId' => array( 'primaryKey' => 'true', ),
+                'description' => null,
+                'project' => array(
+                    'relationship' => 'one-to-one',
+                    'className' => 'sample_Project',
+                ),
+            ),
+        ),
+
+        'sample_Bug' => array(
+            'tableName' => 'bug',
+            'properties' => array(
+                'bugId' => array( 'primaryKey' => 'true', ),
+                'title' => null,
+                'body' => null,
+                'project' => array(
+                    'relationship' => 'many-to-one',
+                    'className' => 'sample_Project',
+                    //'columnName' => 'projectId', // should get this itself!
+                    //'foreignKey' => 'userId', // should get this itself!
+                ),
+                'reporter' => array(
+                    'relationship' => 'many-to-one',
+                    'className' => 'sample_User',
+                    'columnName' => 'reporterUserId',
+                    //'foreignKey' => 'userId', // should get this itself!
+                ),
+                'owner' => array(
+                    'relationship' => 'many-to-one',
+                    'className' => 'sample_User',
+                    'columnName' => 'ownerUserId',
+                    //'foreignKey' => 'userId', // should get this itself!
+                ),
+            ),
+        ),
+
+        'sample_User' => array(
+            'tableName' => 'user',
+            'properties' => array(
+                'userId' => array( 'primaryKey' => 'true', ),
+                'name' => null,
+            ),
+        ),
+
+    ),
+));
+
+$sessionFactory = new repose_ConfigurationSessionFactory($configuration);
+$session = $sessionFactory->currentSession();
+
+$userBeau = new sample_User('beau');
+$userJosh = new sample_User('josh');
+
+$project = new sample_Project('Sample Project', $userBeau);
+
+$bug = new sample_Bug(
+    $project,
+    'Something is broken',
+    'Click http://example.com/ to test!',
+    $userJosh, // Reporter
+    $userBeau // Owner
+);
+
+$session->add($bug);
+$session->flush();
+```

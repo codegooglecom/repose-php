@@ -1,0 +1,129 @@
+[<< Session Factory](ManualSessionFactory.md) | **Configuration Session Factory**
+# Configuration Session Factory #
+
+The Configuration Session Factory is the easiest way to get rolling with Repose. It provides a simple way to configure Repose using pure PHP associative arrays.
+
+The Configuration Session Factory would also be a good starting point and reference in the event that a new Session Factory needs to be designed.
+
+## Example ##
+
+The following is an example of a Configuration Session Factory in use. This code would only need to be run once per script execution provided that the `$sessionFactory` is somehow accessible to any part of the code.
+
+```
+// Create a new Configuration instance
+$configuration = new repose_Configuration(array(
+
+    // Object that implements repose_IAutoloader
+    // 'autoloader' => $myCustomAutoloader,
+
+    // Class that implements repose_IAutoloader
+    // (for obvious reasons, this class must already exist)
+    // 'autloaderClass' => 'my_CustomReposeAutoloader',
+
+    // Define the connection params for the PDO Engine.
+    'connection' => array(
+        'driver' => 'mysql',
+        'username' => 'root',
+        'password' => 'password',
+        'hostname' => 'localhost',
+        'dbName' => 'project'
+    ),
+
+    // Define the class mapping
+    'classes' => array(
+
+        'sample_Project' => array(
+            'tableName' => 'project',
+            'properties' => array(
+                'projectId' => array( 'primaryKey' => 'true', ),
+                'name' => null,
+                'manager' => array(
+                    'relationship' => 'many-to-one',
+                    'className' => 'sample_User',
+                    'columnName' => 'managerUserId',
+                ),
+                'bugs' => array(
+                    'relationship' => 'one-to-many',
+                    'className' => 'sample_Bug',
+                    'backref' => 'project',
+                    'cascade' => 'delete-orphan',
+                ),
+            ),
+        ),
+
+        'sample_ProjectInfo' => array(
+            'tableName' => 'projectInfo',
+            'properties' => array(
+                'projectInfoId' => array( 'primaryKey' => 'true', ),
+                'description' => null,
+                'project' => array(
+                    'relationship' => 'one-to-one',
+                    'className' => 'sample_Project',
+                ),
+            ),
+        ),
+
+        'sample_Bug' => array(
+            'tableName' => 'bug',
+            'properties' => array(
+                'bugId' => array( 'primaryKey' => 'true', ),
+                'title' => null,
+                'body' => null,
+                'project' => array(
+                    'relationship' => 'many-to-one',
+                    'className' => 'sample_Project',
+                ),
+                'reporter' => array(
+                    'relationship' => 'many-to-one',
+                    'className' => 'sample_User',
+                    'columnName' => 'reporterUserId',
+                ),
+                'owner' => array(
+                    'relationship' => 'many-to-one',
+                    'className' => 'sample_User',
+                    'columnName' => 'ownerUserId',
+                ),
+            ),
+        ),
+
+        'sample_User' => array(
+            'tableName' => 'user',
+            'properties' => array(
+                'userId' => array( 'primaryKey' => 'true', ),
+                'name' => null,
+            ),
+        ),
+
+    ),
+));
+
+// Create a Session Factory
+$sessionFactory = new repose_ConfigurationSessionFactory($configuration);
+```
+
+Given the Configuration and Configuration Session Factory defined above, the following snippet of code would work.
+
+```
+// Get the current Session from the Session Factory
+$session = $sessionFactory->currentSession();
+
+$userBeau = new sample_User('beau');
+$userJosh = new sample_User('josh');
+
+$project = new sample_Project('Sample Project', $userBeau);
+
+$bug = new sample_Bug(
+    $project,
+    'Something is broken',
+    'Click http://example.com/ to test!',
+    $userJosh, // Reporter
+    $userBeau // Owner
+);
+
+$bug = $session->add($bug);
+$session->flush();
+```
+
+---
+
+[<< Session Factory](ManualSessionFactory.md) | **Configuration Session Factory**

@@ -1,0 +1,10 @@
+# Status #
+
+Repose is currently under active development after a year break.
+
+
+# Details #
+
+Development of Repose started again in March 2010 after a year break. The code is being rebuilt from the ground up to address some of the issues that the previous design had.
+
+The source for Repose now [lives on GitHub](http://github.com/dflydev/repose-php). The old downloads have been deprecated. Several of the Wiki pages are going to be deprecated as well.
